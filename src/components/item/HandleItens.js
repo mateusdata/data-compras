@@ -129,7 +129,7 @@ const HandleItens = ({ navigation }) => {
       if (response !== null) {
         setCompletedItems(JSON.parse(response));
       }
-    });
+    }); 
     AsyncStorage.getItem("lista").then((response) => {
       // console.log("Eecultou primeiro")
       if (response !== null) {
@@ -178,7 +178,7 @@ const HandleItens = ({ navigation }) => {
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          marginTop: 280,
+          marginTop: "50%",
         }}
       >
         <ActivityIndicator animating={true} color={"green"} size={40} />
@@ -187,6 +187,7 @@ const HandleItens = ({ navigation }) => {
   }
   return (
     <View style={style.main}>
+     
       {itenSelected?.length > 0 ? (
         <Text style={style.h1}> Itens Adicionados</Text>
       ) : (
@@ -209,12 +210,14 @@ const HandleItens = ({ navigation }) => {
               borderWidth: 0.5,
               borderColor: "#0078BD",
               alignItems: "center",
-              width: 175,
+              width:"49.5%",
+              minwidth: "46%",
+              maxWidth:"49%",
               height: 60,
               flexDirection: "row",
               padding: 10,
               borderRadius: 10,
-              right: itenSelected?.length === 1 ? 90 : 0,
+             
             }}
           >
             <MaterialCommunityIcons
@@ -235,28 +238,13 @@ const HandleItens = ({ navigation }) => {
           </Pressable>
         );
       })}
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          gap: 5,
-          alignItems: "center",
-          justifyContent: "flex-start",
-          borderWidth: 0.5,
-          borderColor: "black",
-          borderStyle: "solid",
-          padding: 10,
-          width: 380,
-          marginTop: 15,
-        }}
-      >
+      
         {completedItems.length > 0 ? (
           <Text style={style.h2}> Concluidos</Text>
         ) : (
           false
         )}
         <ItensConcluido navigation={navigation} />
-      </View>
       <Text style={style.h1}> Itens mais procurados da lista</Text>
       {arrayItens?.map((item, index) => (
         <Pressable
@@ -325,7 +313,9 @@ const style = StyleSheet.create({
   pressable: {
     backgroundColor: "#e8eae9",
     alignItems: "center",
-    width: 175,
+    width:"49.5%",
+    minwidth: "46%",
+    maxWidth:"49%",
     height: 60,
     flexDirection: "row",
     padding: 5,

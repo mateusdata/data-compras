@@ -36,16 +36,14 @@ function RuleOfThree() {
     <View style={{ flex: 1, padding:10}}>
       <View style={{ flex: 1, padding:10, justifyContent: "flex-start", alignItems: "flex-start" }}>
         <Text style={{ fontSize: 30, textAlign:"left"}}>Calculadora de Regra de Três Simples</Text>
-        <Text  style={{ fontSize: 20, textAlign:"left" }}>
-          A calculadora de regra de três simples permite descobrir um número em proporção a outros dois que são conhecidos.
-        </Text>
+        
       </View>
       <View style={{ flex: 1,justifyContent: "center", alignItems: "center"}}>
         <Text  style={{ fontSize:24, marginBottom:10}} >Opções</Text>
         <View style={{ flexDirection: "row" }}>
           <TextInput
             keyboardType="numeric"
-            style={{ padding:5, borderWidth: 1, borderColor: "blue", padding: 5, width: "30%", height: "100%", fontSize:30, textAlign:"center" }}
+            style={{ padding:5, borderWidth: 1, borderColor: "green", padding: 5, width: "30%", height: "100%", fontSize:30, textAlign:"center" }}
             onChangeText={(text) => setA(text)}
             value={a}
             placeholder="A"
@@ -53,7 +51,7 @@ function RuleOfThree() {
           <AntDesign name="arrowright" size={30} color="orange" style={{marginTop:10, padding:5}} />
           <TextInput
             keyboardType="numeric"
-             style={{ padding:5, borderWidth: 1, borderColor: "blue", padding: 5, width: "30%", height: "100%", fontSize:30, textAlign:"center" }}
+             style={{ padding:5, borderWidth: 1, borderColor: "green", padding: 5, width: "30%", height: "100%", fontSize:30, textAlign:"center" }}
             onChangeText={(text) => setB(text)}
             value={b}
             placeholder="B"
@@ -63,7 +61,7 @@ function RuleOfThree() {
         <View style={{ flexDirection: "row" , }}>
           <TextInput
             keyboardType="numeric"
-             style={{ padding:5, borderWidth: 1, borderColor: "blue", padding: 5, width: "30%", height: "100%", fontSize:30, textAlign:"center" }}
+             style={{ padding:5, borderWidth: 1, borderColor: "green", padding: 5, width: "30%", height: "100%", fontSize:30, textAlign:"center" }}
             onChangeText={(text) => setC(text)}
             value={c}
             placeholder="C"

@@ -53,11 +53,10 @@ function Screen() {
         options={({ navigation }) => ({
           headerTitle: () => (
             <View>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image source={Compras} style={{ width: 80, height: 65 }} />
+              <View style={{ flexDirection: "row", alignItems: "center",   justifyContent:"space-between", width:"100%" }}>
+                <Image source={Compras} style={{ width: 80, height: 65, resizeMode:"center" }} />
                 <Text
                   style={{
-                    marginLeft: 20,
                     fontSize: 18,
                     fontWeight: "bold",
                     fontSize: 25,
@@ -66,7 +65,7 @@ function Screen() {
                   Data Compras
                 </Text>
                 <Ionicons
-                  style={{ marginLeft: 20 }}
+                 
                   name="calculator-sharp"
                   size={26}
                   color={"orange"}
@@ -75,9 +74,7 @@ function Screen() {
                 <SimpleLineIcons
                   onTouchStart={() => openModal()}
                   style={{
-                    marginLeft: 2,
-                    paddingHorizontal: 25,
-                    paddingVertical: 20,
+                   
                   }}
                   name="options-vertical"
                   size={24}

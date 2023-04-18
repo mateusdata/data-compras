@@ -7,7 +7,7 @@ import Screen from "./src/components/screen/screen";
 
 export default function App() {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1}}>
       <NavigationContainer>
         <StatusBar style="auto" />
         <ContextProvide>

@@ -14,17 +14,17 @@ const ItensConcluido = ({ navigation }) => {
     console.log(item);
   };
   return (
-    <View>
+    <View style={{width:"100%"}}>
       {completedItems?.map((item) => (
         <Pressable
           key={item}
           onPress={() => removeItens(item)}
           style={{
-            backgroundColor: "#F2F2F2",
+            backgroundColor: "#00904F",
             borderWidth: 0.5,
             borderColor: "#078e34",
             alignItems: "center",
-            width: 355,
+            width: "100%",
             height: 60,
             flexDirection: "row",
             padding: 10,
@@ -32,12 +32,11 @@ const ItensConcluido = ({ navigation }) => {
             marginBottom: 5,
           }}
         >
-          <Ionicons name="checkbox" size={28} color="#0078BD" />
+          <Ionicons name="checkbox" size={28} color="#FFFFFF" />
           <Text
             style={{
               color: "white",
               fontWeight: 500,
-              color: "black",
               marginLeft: 5,
             }}
           >
