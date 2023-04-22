@@ -178,10 +178,10 @@ const HandleItens = ({ navigation }) => {
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          marginTop: "50%",
+          marginTop: "75%",
         }}
       >
-        <ActivityIndicator animating={true} color={"green"} size={40} />
+        <ActivityIndicator animating={true} color={"green"} size={"100%"} />
       </View>
     );
   }

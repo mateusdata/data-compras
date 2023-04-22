@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as Notifications from 'expo-notifications';
 
 import {
@@ -12,7 +12,8 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { Context } from "../../context/context";
 import HandleItens from "../../components/item/HandleItens";
-
+import audio from "../../../assets/audio.wav"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ListItens = ({ navigation }) => {
   const [addItens, setAddItens] = useState("");
@@ -24,6 +25,8 @@ const ListItens = ({ navigation }) => {
     setOpenInput,
     loading,
   } = useContext(Context);
+
+
   async function usarExpoNotifications() {
     // Passo 1: Solicitar permissão para notificações
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -36,7 +39,7 @@ const ListItens = ({ navigation }) => {
       console.log('Falha ao obter permissão para notificações!');
       return;
     }
-  
+
     // Passo 2: Configurar o manuseio de notificações
     Notifications.setNotificationHandler({
       handleNotification: async () => {
@@ -48,25 +51,41 @@ const ListItens = ({ navigation }) => {
         };
       },
     });
-  
+
     // Passo 3: Enviar uma notificação
-    
+
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: 'Olá, hoje é seu dia de compras',
-        body: 'Bora fazer suas compras agora, e deixar as coisas em dia',
-        data: { propriedade: 'Valor da propriedade' }, // Dados extras para a notificação
+        title: "Lembrete de compras 🛍️🛒",
+        body: `Olá! Hoje é o dia de compras.  Não se esqueça de utilizar nosso aplicativo para facilitar sua experiência de compras!🛍️🛒 `,
+        data: { propriedade: 'Valor da propriedade🔥' }, // Dados extras para a notificação
         color: 'blue',
+        sound: audio,
         sound: true, // Reproduzir som na notificação
-        vibration: true
+        vibration: true,
+
       },
-      trigger: Platform.OS === 'ios' ? { hour: 00, minute: 00, repeats: true } : { hour: 00, minute: 00, repeats: true },
+      //trigger: Platform.OS === 'ios' ? { hour: 10, minute: 10, repeats: true } : { day: 21, month: 4, year:2023, hour:18, minute:9, repeats: true },
+
+      trigger: { seconds: 2, repeats: false },
     });
-    
+
+    /* await Notifications.scheduleNotificationAsync({
+       content: {
+         title: 'Olá, bom dia, ja fez suas compras',
+         body: 'Bora fazer suas compras agora, e deixar as coisas em dia 🛒🥳',
+         data: { propriedade: 'Valor da propriedade🔥' }, // Dados extras para a notificação
+         color: 'blue',
+         sound: audio,
+         sound: true, // Reproduzir som na notificação
+         vibration: true,
+       },
+       trigger: Platform.OS === 'ios' ? { hour: 20, minute: 10, repeats: true } : { hour: 17, minute: 54, repeats: true },
+       trigger: { seconds: 15, repeats: false },
+     });*/
   }
-  
   // Chame a função para iniciar o uso do Expo Notifications
-  usarExpoNotifications();
+  //usarExpoNotifications();
   const openAdd = () => {
     setOpenInput(false);
   };
@@ -82,12 +101,13 @@ const ListItens = ({ navigation }) => {
 
   return (
     <View style={style.main} onTouchStart={() => setOpen(false)}>
-     
+
       <View>
         {openInput ? (
-          <Pressable style={style.pressable} onPress={() =>{
-           // usarExpoNotifications();
-            openAdd()}}>
+          <Pressable style={style.pressable} onPress={() => {
+            //usarExpoNotifications();
+            openAdd()
+          }}>
             <Text style={style.text}>Adicionar item</Text>
           </Pressable>
         ) : (

@@ -3,7 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
 import { ContextProvide } from "./src/context/context";
 import { View } from "react-native";
-import Screen from "./src/components/screen/screen";
+import Screen from "./src/screen/screen";
+
 
 export default function App() {
   return (

@@ -1,26 +1,29 @@
+
 import React, { useContext} from "react";
 import { Image, Text, View } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ListItens from "../../pages/list/ListItens";
-import { Context } from "../../context/context";
-import Compras from "../../../assets/carinho.jpg";
-import RuleOfThree from "../../pages/rule of three/ruleOfThree";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
+import Compras from "../../assets/carinho.jpg";
+import ShoppingDay from "../pages/shoppingDay/shoppingDay";
+import ListItens from "../pages/list/ListItens";
+import RuleOfThree from "../pages/rule of three/ruleOfThree";
+import { Context } from "../context/context";
+import { useNavigation } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 function Screen() {
   const { setItenSelected, open, setOpen, setCompletedItems } =
     useContext(Context);
+    const navigate = useNavigation()
   /*
     import { useNavigation } from '@react-navigation/native';
     const navigation = useNavigation()
     eu posso usar assim ou passar um paramentro e uma função que retorna um objeto contendo as propriedades
     por exemplo a propriedade headerTitleLeft: () => (<View>Meu condigo</View>), demais propriedades...
     */
-
   const removeAdd = () => {
     AsyncStorage.removeItem("lista");
     setOpen(false);
@@ -54,7 +57,7 @@ function Screen() {
           headerTitle: () => (
             <View>
               <View style={{ flexDirection: "row", alignItems: "center",   justifyContent:"space-between", width:"100%" }}>
-                <Image source={Compras} style={{ width: 80, height: 65, resizeMode:"center" }} />
+                <Image onTouchStart={()=> navigate.navigate("Dia da compra")} source={Compras} style={{ width: 80, height: 65, resizeMode:"center" }}  />
                 <Text
                   style={{
                     fontSize: 18,
@@ -197,6 +200,7 @@ function Screen() {
           },
         }}
       />
+      <Stack.Screen name="Dia da compra" component={ShoppingDay}/>
     </Stack.Navigator>
   );
 }
