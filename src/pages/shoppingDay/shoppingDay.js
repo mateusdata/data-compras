@@ -1,103 +1,110 @@
 import React, { useEffect, useState } from 'react'
-import { Button, StyleSheet, Text, View, TextInput, Animated, Pressable } from 'react-native'
+import { Button, StyleSheet, Text, View, TextInput, Animated, Pressable, Image } from 'react-native'
 import gifCompras from "../../../assets/gif-compras.gif"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications';
-
+let diferencaMinutos = 0;
 const ShoppingDay = () => {
     const [day, setDay] = useState("")
     const [hors, setHors] = useState("")
     const [modal, setModal] = useState(false)
     const [modalOpacity] = useState(new Animated.Value(0)) // Adicione um Animated.Value para controlar a opacidade do modal
     const [focus, setFocus] = useState(true)
-    const [time, setTime] = useState("")
+    const [isShoppingStatus, setIsShoppingStatus] = useState([])
     //alert(new Date().getDate())
     // Função para animar a transição de mostrar/ocultar o modal
+ useEffect(()=>{
+    AsyncStorage.getItem("statusDay").then((response)=>{
+        console.log("deu certo ta no local storage");
+        const data = JSON.parse(response)
+       // setIsShoppingStatus([data.newDate, data.newHors])
+        //console.log(data.newDate)
+        if(data !==null){
+            setIsShoppingStatus(data)
+            console.log("data: " , isShoppingStatus.newDate + data.newHors)
+            return
+        }
 
+    });
+ }, [setIsShoppingStatus])
 
     async function usarExpoNotifications() {
         // Passo 1: Solicitar permissão para notificações
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
         if (existingStatus !== 'granted') {
-          const { status } = await Notifications.requestPermissionsAsync();
-          finalStatus = status;
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
         }
         if (finalStatus !== 'granted') {
-          console.log('Falha ao obter permissão para notificações!');
-          return;
+            console.log('Falha ao obter permissão para notificações!');
+            return;
         }
-    
+
         // Passo 2: Configurar o manuseio de notificações
         Notifications.setNotificationHandler({
-          handleNotification: async () => {
-            // Faça o que quiser com a notificação recebida
-            return {
-              shouldShowAlert: true,
-              shouldPlaySound: true,
-              shouldSetBadge: false,
-            };
-          },
+            handleNotification: async () => {
+                // Faça o que quiser com a notificação recebida
+                return {
+                    shouldShowAlert: true,
+                    shouldPlaySound: true,
+                    shouldSetBadge: false,
+                };
+            },
         });
-    
+
         // Passo 3: Enviar uma notificação
-    
+
         await Notifications.scheduleNotificationAsync({
-          content: {
-            title: "Lembrete de compras 🛍️🛒",
-            body: `Olá! Hoje é o dia de compras. Não se esqueça de utilizar nosso aplicativo para facilitar sua experiência de compras!🛍️🛒 `,
-            data: { propriedade: 'Valor da propriedade🔥' }, // Dados extras para a notificação
-            sound: true, // Reproduzir som na notificação
-            vibration: true,
-          },
-          //trigger: Platform.OS === 'ios' ? { hour: 10, minute: 10, repeats: true } : { day: 21, month: 4, year:2023, hour:18, minute:9, repeats: true },
-     
-          trigger: { seconds: time * 59, repeats: true },
+            content: {
+                title: "Lembrete de compras 🛍️🛒",
+                body: `Olá! Hoje é o dia de compras. Não se esqueça de utilizar nosso aplicativo para facilitar sua experiência de compras!🛍️🛒 `,
+                data: { propriedade: 'Valor da propriedade🔥' }, // Dados extras para a notificação
+                sound: true, // Reproduzir som na notificação
+                vibration: true,
+            },
+            //trigger: Platform.OS === 'ios' ? { hour: 10, minute: 10, repeats: true } : { day: 21, month: 4, year:2023, hour:18, minute:9, repeats: true },
+
+            trigger: { seconds: diferencaMinutos * 60, repeats: false },
         });
-      }
+    }
     const toggleModal = () => {
-
-
         if (modal) {
-            if (day && hors) {
+            if (day.length=== 10 && hors.length === 5) {
                 // AsyncStorage.setItem("shoppingDay", JSON.stringify(newArray));
-               
+                setDay("");
+                setHors("");
                 const newHors = parseFloat(hors);
                 const newDay = parseFloat(day);
                 console.log(newHors + newDay)
                 let dataErrada = day;
                 let partesData = dataErrada.split('/');
                 console.log(partesData);
-                let diaUsuario = parseFloat(partesData[0]); 
+                let diaUsuario = parseFloat(partesData[0]);
                 let mesUsuario = parseFloat(partesData[1]) - 1;
-                let anoUsuario = parseFloat(partesData[2]); 
+                let anoUsuario = parseFloat(partesData[2]);
                 console.log(diaUsuario, mesUsuario, anoUsuario);
                 let hora = hors;
                 let partesHora = hora.split(':');
                 console.log(partesHora);
                 let horaUsuario = parseFloat(partesHora[0]);
                 let minutosUsuario = parseFloat(partesHora[1]);
-                console.log( horaUsuario, minutosUsuario);
+                console.log(horaUsuario, minutosUsuario);
                 const dataUsuario = new Date(anoUsuario, mesUsuario, diaUsuario, horaUsuario, minutosUsuario);
                 console.log(dataUsuario);
                 const dataAtual = new Date();
-                let diferencaMinutos = Math.round((dataAtual - dataUsuario) / (1000 * 60));
-                if(diferencaMinutos<0){
+                diferencaMinutos = Math.round((dataAtual - dataUsuario) / (1000 * 60));
+                if (diferencaMinutos < 0) {
                     diferencaMinutos = Math.abs(diferencaMinutos)
                 }
                 console.log(diferencaMinutos);
-                if(isNaN(diferencaMinutos)){
+                if (isNaN(diferencaMinutos)) {
                     alert("Data ou hora invalida")
                     return;
                 }
-                setTime(diferencaMinutos);
-                console.log("time: " + time *60);
+                console.log("Minutos:", diferencaMinutos);
                 usarExpoNotifications();
-                AsyncStorage.setItem("shoppingDayMinuts", JSON.stringify(diferencaMinutos)).then((response)=>{
-                    console.log("deu certo ta no local storage");
-                    setModal(false)
-                   
-                });
+                setModal(false);
                 /*
                 let dataErrada = "21/05/2023"; // Data no formato "dd/MM/yyyy"
                 let partesData = dataErrada.split('/'); // Divide a string em três partes, separadas pelo caractere "/"
@@ -125,9 +132,17 @@ const ShoppingDay = () => {
                 console.log('Diferença em minutos:', diferencaMinutos); // Exibe a diferença em minutos entre as duas datas
                 console.log('Diferença em dias:', diferencaDias); // Exibe a diferença em dias entre as duas datas
                 */
+                
+                AsyncStorage.setItem("statusDay", JSON.stringify({newDate:day, newHors: hors})).then((response)=>{
+                    console.log("deu certo ta no local storage");
+
+                   setIsShoppingStatus({newDate:day, newHors: hors})
+                    
+                });
                 return;
             }
-            
+            alert("Data ou hora invalida")
+
             Animated.timing(modalOpacity, {
                 toValue: 0, // Anima a opacidade para 0
                 duration: 800, // Duração da animação em milissegundos
@@ -146,8 +161,17 @@ const ShoppingDay = () => {
     }
 
     return (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: modal ? "flex-end" : "center", backgroundColor: modal ? "#00000090" : "white" }}>
-            {!modal && <Button title='Escolher dia' onPress={toggleModal} />}
+        <View style={{ flex: 1, alignItems: "center", justifyContent: modal ? "flex-end" : "center", backgroundColor: modal ? "#00000090" : "#c1c1cc" }}>
+           {!modal && <View style={{ padding:15 ,width:"80%", borderWidth:1, borderColor:"blue", height:"50%", alignItems:"center", justifyContent:"center", borderRadius:20, gap:20, backgroundColor:"#eaeaf2"}}>
+           <Text style={[style.text, {textAlign:"center"}]}>Escolha o melhor dia para fazer suas compas</Text>
+           
+                {isShoppingStatus &&<Text style={{textAlign:"center", fontWeight:"800"}}>Suas compras estão agendada para o dia {isShoppingStatus.newDate}  - as {isShoppingStatus.newHors}h</Text>}
+                <Image resizeMode='center' source={{uri:"https://media.tenor.com/CpyznooaXxoAAAAC/mercado-compras.gif"}} style={{width:"50%", height:"20%", borderRadius:80}}/>
+                <Pressable onPress={toggleModal} style={[style.presable,{padding:15, height:60, backgroundColor:"#007BFF"}]}>
+                    <Text style={{ color: "white", fontSize: 20 }}>Escolher data</Text>
+                </Pressable>
+           
+           </View>}
             {modal && <Animated.View style={{
                 backgroundColor: "white",
                 height: "50%",
@@ -175,15 +199,23 @@ const ShoppingDay = () => {
                         })
                     }} style={{ backgroundColor: "#38393a", height: 7, bottom: 12, width: "15%", borderRadius: 5 }}></View>
                 </View>
-                <Text>informe a data ex: 05</Text>
-                <TextInput onChangeText={(e) => setDay(e)} placeholder='Dia da compra' style={[style.input, { borderColor: focus ? "gray" : "#4285F4" }]} onTouchEnd={() => setFocus(false)} />
-                <Text>informe a data ex: 05:15</Text>
-                <TextInput onChangeText={(e) => setHors(e)} placeholder='Hora da compra' style={[style.input, { borderColor: focus ? "#4285F4" : "gray" }]} onTouchEnd={() => setFocus(true)} />
+                <Text style={style.text}>Data ex: 05/10/2022</Text>
+                <TextInput value={day} onChangeText={(e) => setDay(e)} placeholder={ !isShoppingStatus ? 'Data ex: 05/10/2022' : isShoppingStatus.newDate+" data atual"} focus={true} style={[style.input, { borderColor: focus ? "gray" : "#4285F4" }]} onTouchEnd={() => setFocus(false)} />
+                <Text style={style.text}>Data ex: 05:15</Text>
+                <TextInput  value={hors} onChangeText={(e) => setHors(e)} placeholder={ !isShoppingStatus ?'Hora ex: 08:15': isShoppingStatus.newHors+" hora atual"} style={[style.input, { borderColor: focus ? "#4285F4" : "gray" }]} onTouchEnd={() => setFocus(true)} />
 
                 <Pressable onPress={toggleModal} style={style.presable}>
                     <Text style={{ color: "white", fontSize: 25 }}>Salvar</Text>
                 </Pressable>
-               
+                    <Button color={"#D14A3E"} title='apara Data' onPress={()=>{
+                         AsyncStorage.removeItem("statusDay").then((response)=>{
+                           console.log("apagou");
+                           setIsShoppingStatus("");
+                           setDay("");
+                           setHors("");
+                           
+                        });
+                    }}/>
             </Animated.View>}
         </View>
     )
@@ -197,9 +229,13 @@ const style = StyleSheet.create({
         justifyContent: "center", height: 50, borderRadius: 10, padding: 10, fontSize: 18
     },
     presable: {
-        height: 50, backgroundColor: "green",
+        height: 50, backgroundColor: "#018337",
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
+        marginTop: 10
+    },
+    text: {
+        fontSize: 22,
     }
 })
