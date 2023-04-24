@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Button, StyleSheet, Text, View, TextInput, Animated, Pressable, Image } from 'react-native'
-import gifCompras from "../../../assets/gif-compras.gif"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications';
 let diferencaMinutos = 0;
@@ -10,7 +9,7 @@ const ShoppingDay = () => {
     const [modal, setModal] = useState(false)
     const [modalOpacity] = useState(new Animated.Value(0)) // Adicione um Animated.Value para controlar a opacidade do modal
     const [focus, setFocus] = useState(true)
-    const [isShoppingStatus, setIsShoppingStatus] = useState([])
+    const [isShoppingStatus, setIsShoppingStatus] = useState(false)
     //alert(new Date().getDate())
     // Função para animar a transição de mostrar/ocultar o modal
  useEffect(()=>{

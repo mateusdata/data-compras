@@ -1,5 +1,5 @@
 
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import { Image, Text, View } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,7 +17,7 @@ const Stack = createStackNavigator();
 function Screen() {
   const { setItenSelected, open, setOpen, setCompletedItems } =
     useContext(Context);
-    const navigate = useNavigation()
+  const navigate = useNavigation()
   /*
     import { useNavigation } from '@react-navigation/native';
     const navigation = useNavigation()
@@ -56,8 +56,8 @@ function Screen() {
         options={({ navigation }) => ({
           headerTitle: () => (
             <View>
-              <View style={{ flexDirection: "row", alignItems: "center",   justifyContent:"space-between", width:"100%" }}>
-                <Image onTouchStart={()=> navigate.navigate("Dia da compra")} source={Compras} style={{ width: 80, height: 65, resizeMode:"center" }}  />
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                <Image onTouchStart={() => navigate.navigate("Dia da compra")} source={Compras} style={{ width: 80, height: 65, resizeMode: "center" }} />
                 <Text
                   style={{
                     fontSize: 18,
@@ -68,7 +68,7 @@ function Screen() {
                   Data Compras
                 </Text>
                 <Ionicons
-                 
+
                   name="calculator-sharp"
                   size={26}
                   color={"orange"}
@@ -77,7 +77,7 @@ function Screen() {
                 <SimpleLineIcons
                   onTouchStart={() => openModal()}
                   style={{
-                   
+
                   }}
                   name="options-vertical"
                   size={24}
@@ -86,83 +86,95 @@ function Screen() {
               </View>
               {open ? (
                 <View
+                onTouchStart={(event)=> {
+                  event.stopPropagation();
+                  setOpen(false)
+                  return false
+                }}
                   style={{
                     position: "absolute",
                     bottom: 0,
                     right: 0,
-                    top: 600,
-                    left: -15,
-                    paddingTop: 15,
-                    backgroundColor: "#cccfd1",
-                    width: 389,
-                    height: 260,
-                    borderRadius: 20,
-                    alignItems: "flex-start",
+                    top: "-50%",
+                    left: "-10%",
+                    paddingTop: 0,
+                    backgroundColor: "#00000090",
+                    width: "120%",
+                    height: "1340%",
+                    borderRadius: 0,
+                    alignItems: "center",
+                    justifyContent:"flex-end",
                     padding: 0,
+                    flex:1
                   }}
                 >
-                  <View
-                    onTouchStart={() => removeAdd()}
-                    style={{
-                      width: 380,
-                      marginBottom: 20,
-                      paddingLeft: 20,
-                      borderBottomColor: "#2f3133",
-                      borderBottomWidth: 0.5,
-                    }}
-                  >
-                    <Text
+                  <View  onTouchStart={()=>{setOpen(true)}} style={{backgroundColor:"white",  borderRadius: 20, width:"90%", padding:20}}>
+                    <View style={{alignItems:"center" }}>
+                      <View  style={{ backgroundColor: "#38393a", height: 7, bottom: 12, width: "15%", borderRadius: 5, alignItems:"center" }}></View>
+                    </View>
+                    <View
+                      onTouchStart={() => removeAdd()}
                       style={{
-                        fontSize: 20,
+                        width: 380,
                         marginBottom: 20,
-                        color: "#2f3133",
+                        paddingLeft: 20,
+                        borderBottomColor: "#2f3133",
+                        borderBottomWidth: 0.5,
                       }}
                     >
-                      Remover todos Adicionados
-                    </Text>
-                  </View>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          marginBottom: 20,
+                          color: "#2f3133",
+                        }}
+                      >
+                        Remover todos Adicionados
+                      </Text>
+                    </View>
 
-                  <View
-                    onTouchStart={() => removeConcluded()}
-                    style={{
-                      width: 380,
-                      marginBottom: 20,
-                      paddingLeft: 20,
-                      borderBottomColor: "#2f3133",
-                      borderBottomWidth: 0.5,
-                    }}
-                  >
-                    <Text
+                    <View
+                      onTouchStart={() => removeConcluded()}
                       style={{
-                        fontSize: 20,
+                        width: 380,
                         marginBottom: 20,
-                        color: "#2f3133",
+                        paddingLeft: 20,
+                        borderBottomColor: "#2f3133",
+                        borderBottomWidth: 0.5,
                       }}
                     >
-                      Remover todos concluidos
-                    </Text>
-                  </View>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          marginBottom: 20,
+                          color: "#2f3133",
+                        }}
+                      >
+                        Remover todos concluidos
+                      </Text>
+                    </View>
 
-                  <View
-                    onTouchStart={() => removeAll()}
-                    style={{
-                      width: 380,
-                      paddingLeft: 20,
-                      borderBottomColor: "#2f3133",
-                      borderBottomWidth: 0.5,
-                    }}
-                  >
-                    <Text
+                    <View
+                      onTouchStart={() => removeAll()}
                       style={{
-                        fontSize: 20,
-                        marginBottom: 20,
-                        color: "#2f3133",
+                        width: 380,
+                        paddingLeft: 20,
+                        borderBottomColor: "#2f3133",
+                        borderBottomWidth: 0.5,
                       }}
                     >
-                      Remover todos os itens
-                    </Text>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          marginBottom: 20,
+                          color: "#2f3133",
+                        }}
+                      >
+                        Remover todos os itens
+                      </Text>
+                    </View>
                   </View>
-                </View>
+                </View> //aqui
               ) : (
                 false
               )}
@@ -200,7 +212,7 @@ function Screen() {
           },
         }}
       />
-      <Stack.Screen name="Dia da compra" component={ShoppingDay}/>
+      <Stack.Screen name="Dia da compra" component={ShoppingDay} />
     </Stack.Navigator>
   );
 }

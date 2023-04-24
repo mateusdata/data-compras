@@ -2,7 +2,7 @@
   "expo": {
     "name": "Data compras",
     "slug": "compras",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mateusdata.compras"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +30,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "04abf725-fbb5-4494-bb85-1fb72488b191"
+        "projectId": "5625841c-bbc0-4df3-8fa0-176c1338a855"
       }
     }
   }
