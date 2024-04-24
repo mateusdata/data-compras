@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Data compras v1",
+    "name": "Data compras",
     "slug": "data-compas",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,14 +16,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mateusdata.compras2"
+      "bundleIdentifier": "com.mateusdata.compras"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mateusdata.compras2"
+      "package": "com.mateusdata.compras"
     },
     "web": {
       "favicon": "./assets/favicon.png"
