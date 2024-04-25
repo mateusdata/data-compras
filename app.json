@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Data compras",
+    "name": "Data compras v3",
     "slug": "data-compas",
-    "version": "2.0.0",
+    "version": "2.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -30,7 +30,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "3d6e46f2-1d5f-46cd-ad97-c61c6f6541e8"
+        "projectId": "4a54730d-44ff-4442-a922-d81a57a1ab35"
       }
     },
     "owner": "mateusdata"
