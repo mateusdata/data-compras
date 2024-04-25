@@ -56,7 +56,7 @@ const ListItens = ({ navigation }) => {
 
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Lembrete de compras 🛍️🛒 v1.2.0",
+        title: "Lembrete de compras 🛍️🛒 v2.0.0",
         body: `Olá! Hoje é o dia de compras.  Não se esqueça de utilizar nosso aplicativo para facilitar sua experiência de compras!🛍️🛒 `,
         data: { propriedade: 'Valor da propriedade🔥' }, // Dados extras para a notificação
         color: 'blue',

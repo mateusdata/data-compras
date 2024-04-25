@@ -7,6 +7,7 @@ import Screen from "./src/screen/screen";
 
 
 export default function App() {
+  const dara = 10
   return (
     <View style={{ flex: 1}}>
       <NavigationContainer>
