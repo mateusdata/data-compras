@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "726353729050",
+    "project_id": "data-59e18",
+    "storage_bucket": "data-59e18.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726353729050:android:7347dbc6967a9cf7a963a3",
+        "android_client_info": {
+          "package_name": "com.projetofono10.datacompras"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726353729050-553ac18i78k06nh03k0mdp0p4c7bbbep.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.projetofono10.datacompras",
+            "certificate_hash": "f06b571596225dd42a06d1b66a0d26a106f464e9"
+          }
+        },
+        {
+          "client_id": "726353729050-o15s62m6j1dteudl0lc3s2n3cgb9e3g6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.projetofono10.datacompras",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "726353729050-cu231380cbsr4p03p53ivf4tkponfmbi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyHHy6dJHuA52ZVmea11Ynfz49BmXRE28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726353729050-cu231380cbsr4p03p53ivf4tkponfmbi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "726353729050-4mk6f6k9q8pljp8inrksvsr3ok2h3r0v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.projetofono10.datacompras"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

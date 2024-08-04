@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "Data compras v3",
-    "slug": "data-compas",
-    "version": "2.1.1",
+    "name": "datacompras",
+    "slug": "datacompras",
+    "scheme": "datacompras",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,28 +12,42 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mateusdata.compras"
+      "bundleIdentifier": "com.projetofono10.datacompras",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mateusdata.compras"
+      "package": "com.projetofono10.datacompras",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
+      "router": {
+        "origin": false
+      },
       "eas": {
-        "projectId": "4a54730d-44ff-4442-a922-d81a57a1ab35"
+        "projectId": "87423a9c-6b63-4fbb-b7cd-97b9c190dab4"
       }
     },
-    "owner": "mateusdata"
+    "owner": "projetofono10",
+    "plugins": [
+      "expo-router",
+      "@react-native-google-signin/google-signin",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": null,
+          "enableGooglePay": true
+        }
+      ]
+
+    ]
   }
 }
