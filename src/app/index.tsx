@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, Alert, I
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { colorPrimary } from "../../constants/constants";
-import * as SplashScreen from 'expo-splash-screen';
 
 // Define a type for the items
 interface Item {

@@ -1,22 +1,32 @@
 import { SplashScreen, Stack } from 'expo-router'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Calculator from '../components/Calculator';
 import { colorPrimary } from '../../constants/constants';
-import { Image, Text, View } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function _layout() {
+
+    const videoRef = useRef<any>(null);
+
+    useEffect(() => {
+        const handleVideoPlayback = async () => {
+            if (videoRef.current) {
+                await videoRef.current.presentFullscreenPlayer();
+            }
+        };
+        handleVideoPlayback();
+    }, []);
     const [appIsReady, setAppIsReady] = useState(false);
     useEffect(() => {
+
         async function prepare() {
             try {
-                // Artificially delay for two seconds to simulate a slow loading
-                // experience. Please remove this if you copy and paste the code!
-                await new Promise(resolve => setTimeout(resolve, 5000));
-                // Simulate an error during loading
-                // await new Promise((_, reject) => reject('Error'));
+
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
             } catch (e) {
                 console.warn(e);
             } finally {
@@ -35,28 +45,21 @@ export default function _layout() {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "red",
+                backgroundColor: "white",
             }}>
-                <Text>Carregando app</Text>
-                <Image
-                    source={{ uri: "https://cdn.dribbble.com/users/967334/screenshots/3742472/dribbble.gif" }} // Path to your GIF
-                    style={{ height: 100, width: 150 }}
-                />
-                <Video
 
-                    style={{
-                        with:200,
-                        height:200
-                    }}
-                    source={{
-                        uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-                    }}
-                    useNativeControls
+                <Video
+                    style={styles.video}
+                    source={require("../assents/video.mp4")}
+                    useNativeControls={true}
                     resizeMode={ResizeMode.CONTAIN}
                     isLooping
-                    
-                   
+                    shouldPlay
+                    isMuted
+
+
                 />
+                <ActivityIndicator style={styles.indicator} size={50} color={colorPrimary} />
             </View>
         )
     }
@@ -88,3 +91,18 @@ export default function _layout() {
         </>
     )
 }
+
+
+const styles = StyleSheet.create({
+    video: {
+        width: "100%",
+        height: 1000,
+        borderRadius: 2,
+        borderWidth: 10,
+        backgroundColor: "white"
+    },
+    indicator:{
+        position:"absolute",
+        bottom:50
+    }
+})
