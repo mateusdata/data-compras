@@ -1,0 +1,15 @@
+
+#Cria build para playstore remoto 
+eas build --platform android --message "Segundo build para playstore"
+
+#Cria build para playstore local 
+eas build --platform android --local
+
+#Fazer build local usando perfio loca de desenvolvimento
+eas build --platform android --profile development --local
+
+
+#Fazer build remoto usando perfio loca de desenvolvimento
+eas build --platform android --profile development
+
+

@@ -3,7 +3,7 @@
     "name": "Data compras",
     "slug": "data-compras",
     "scheme": "datacompras",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -35,7 +35,14 @@
       }
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier":"",
+          "enableGooglePay": true
+        }
+      ]
     ],
     "owner": "mateusdata"
   }
