@@ -19,6 +19,7 @@ web-build/
 
 # Metro
 .metro-health-check*
+*.aab
 
 # debug
 npm-debug.*
@@ -28,6 +29,8 @@ yarn-error.*
 # macOS
 .DS_Store
 *.pem
+*.abb
+
 
 # local env files
 .env*.local

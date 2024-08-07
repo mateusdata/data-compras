@@ -19,7 +19,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "versionCode": 9
       },
       "package": "com.mateusdata.compras"
     },
@@ -35,14 +36,8 @@
       }
     },
     "plugins": [
-      "expo-router",
-      [
-        "@stripe/stripe-react-native",
-        {
-          "merchantIdentifier":"",
-          "enableGooglePay": true
-        }
-      ]
+      "expo-router"
+    
     ],
     "owner": "mateusdata"
   }

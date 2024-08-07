@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { TextInput, IconButton, Button } from 'react-native-paper';
 import { colorPrimary } from '../../constants/constants';
-import AntDesign from '@expo/vector-icons/AntDesign';
+
 export default function RegraDeTres() {
     const [a, setA] = useState('');
     const [b, setB] = useState('');
@@ -18,83 +19,100 @@ export default function RegraDeTres() {
         }
     }, [a, b, c]);
 
-
     function resetValues() {
         setA("");
         setB("");
         setC("");
-        setC("");
-
-
+        setD("");
+        Alert.alert("Campos limpos", "Os item foram removidos")
     }
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Calculadora de Regra de Três</Text>
-            <View style={styles.row}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Valor de A"
-                    keyboardType="numeric"
-                    value={a}
-                    onChangeText={setA}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Valor de B"
-                    keyboardType="numeric"
-                    value={b}
-                    onChangeText={setB}
-                />
-            </View>
-            <View style={styles.row}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Valor de C"
-                    keyboardType="numeric"
-                    value={c}
-                    onChangeText={setC}
-                />
-                <TextInput
-                    style={[styles.input, styles.result]}
-                    placeholder="Resultado (D)"
-                    value={Number(d).toFixed(2)}
-                    editable={false}
-                />
-            </View>
-
-            <View style={styles.exampleContainer}>
-                <Text style={styles.helpText}>
-                    Exemplo:
-                </Text>
-                <View style={styles.table}>
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableCell}>{`${a ? a + " Kilos de arroz" : "Exemplo de (A)"}`} </Text>
-                        <Text style={styles.tableCell}>{`${a && b ? " custa R" + b + " Reais" : "Exemplo de (B)"}`}</Text>
-                    </View>
-
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableCell}>{`${a && b && c ? "Então " + c + " Kilos de arroz" : "Exemplo de (C)"}`} </Text>
-                        <Text style={[styles.tableCellCheck, { color: d && colorPrimary }]}>{`${d ? "custa " + Number(d).toFixed(2) + " Reais" : "Resultado (D)"}`}</Text>
-                    </View>
-
+            <View style={styles.container2}>
+                <Text style={styles.title}>Calculadora de Regra de Três</Text>
+                <View style={styles.row}>
+                    <TextInput
+                        mode="outlined"
+                        label="Valor de A"
+                        keyboardType="numeric"
+                        value={a}
+                        onChangeText={setA}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        mode="outlined"
+                        label="Valor de B"
+                        keyboardType="numeric"
+                        value={b}
+                        onChangeText={setB}
+                        style={styles.input}
+                    />
                 </View>
+                <View style={styles.row}>
+                    <TextInput
+                        mode="outlined"
+                        label="Valor de C"
+                        keyboardType="numeric"
+                        value={c}
+                        onChangeText={setC}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        mode="outlined"
+                        label="Resultado (D)"
+                        value={Number(d).toFixed(2)}
+                        editable={false}
+                        style={[styles.input, styles.result]}
+                    />
+                </View>
+
+                <View style={styles.exampleContainer}>
+                    <Text style={styles.helpText}>
+                        Exemplo:
+                    </Text>
+                    <View style={styles.table}>
+                        <View style={styles.tableRow}>
+                            <Text style={styles.tableCell}>{`${a ? a + " Kilos de arroz" : "Exemplo de (A)"}`} </Text>
+                            <Text style={styles.tableCell}>{`${a && b ? " custa R" + b + " Reais" : "Exemplo de (B)"}`}</Text>
+                        </View>
+
+                        <View style={styles.tableRow}>
+                            <Text style={styles.tableCell}>{`${a && b && c ? "Então " + c + " Kilos de arroz" : "Exemplo de (C)"}`} </Text>
+                            <Text style={[styles.tableCellCheck, { color: d && colorPrimary }]}>{`${d ? "custa " + Number(d).toFixed(2) + " Reais" : "Resultado (D)"}`}</Text>
+                        </View>
+                    </View>
+                </View>
+
+
             </View>
-
-
-            <Pressable onPress={resetValues} android_ripple={{ color: "gray" }} style={styles.presable}>
-                <AntDesign name="delete" size={34} color="red" />
-            </Pressable>
-
+            <Button
+                textColor='white'
+                buttonColor={"red"}
+                onPress={resetValues}
+                style={styles.pressable}>
+                Limpar formulario
+            </Button>
         </View>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        padding: 20,
+        padding: 15,
         paddingTop: 50,
         backgroundColor: 'white',
+    },
+    container2: {
+        flex: 1,
+        alignItems: 'center',
+        padding: 15,
+        paddingTop: 50,
+        backgroundColor: 'white',
+        width:"100%",
+
     },
     title: {
         fontSize: 20,
@@ -107,12 +125,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     input: {
-        height: 40,
-        borderColor: '#ddd',
-        borderWidth: 1,
+        flex: 1,
         marginHorizontal: 5,
-        paddingHorizontal: 10,
-        width: '48%',
+        fontSize: 18,
     },
     result: {
         backgroundColor: 'white',
@@ -149,22 +164,10 @@ const styles = StyleSheet.create({
     tableCellCheck: {
         fontSize: 16,
         flex: 1,
-
     },
-    presable: {
-        position: "absolute",
-        bottom: 10,
-        right: 15,
-        margin: 16,
+    pressable: {
+        width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        padding: 10,
-        height: 60,
-        borderRadius: 80,
-        backgroundColor: "white"
     },
-    presableText: {
-        color: "white",
-        fontSize: 18,
-    }
 });
