@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, View, FlatList, Alert } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet, Text, View, FlatList } from "react-native";
+import { Button, TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button, TextInput, IconButton } from 'react-native-paper';
-import { colorPrimary } from "../../constants/constants";
 
 // Define a type for the items
 interface Item {
@@ -14,6 +13,7 @@ interface Item {
 export default function DataCompras() {
   const [items, setItems] = useState<Item[]>([]);
   const [newItem, setNewItem] = useState<string>('');
+  const inputRef = useRef<any>(null); // Reference for the TextInput
 
   useEffect(() => {
     loadItems();
@@ -38,8 +38,6 @@ export default function DataCompras() {
     }
   };
 
-
-
   const addItem = () => {
     if (newItem.trim() !== '') {
       const newItemObj = {
@@ -51,80 +49,58 @@ export default function DataCompras() {
       setItems(updatedItems);
       saveItems(updatedItems);
       setNewItem('');
-      return;
+      inputRef.current?.blur(); // Remove focus from the TextInput
+    } else {
+      // Show error message directly
+      alert("O item não pode estar vazio.");
     }
-
-    Alert.alert("Ocorreu um erro");
   };
 
   const removeItem = (id: string) => {
-    Alert.alert(
-      "Remover Item",
-      "Tem certeza de que deseja remover este item?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Remover",
-          onPress: () => {
-            const updatedItems = items.filter(item => item.id !== id);
-            setItems(updatedItems);
-            saveItems(updatedItems);
-          }
-        }
-      ]
-    );
+    const updatedItems = items.filter(item => item.id !== id);
+    setItems(updatedItems);
+    saveItems(updatedItems);
   };
 
   const renderItem = ({ item }: { item: Item }) => (
-    <View style={[styles.item, item.selected ? styles.itemSelected : styles.itemUnselected]}>
-      <Text style={[styles.itemText, item.selected && styles.itemTextSelected]}>
-        {item.name}
-      </Text>
-      <View style={styles.itemActions}>
-        {item.selected && (
-          <IconButton
-            icon="check-circle"
-            size={24}
-            iconColor={"#28a745"}
-          />
-        )}
-        <IconButton
-          icon="delete"
-          size={24}
-          iconColor="red"
-          onPress={() => removeItem(item.id)}
-        />
-      </View>
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemText}>{item.name}</Text>
+      <Button
+        mode="contained"
+        onPress={() => removeItem(item.id)}
+        style={styles.removeButton}
+      >
+        Remover
+      </Button>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.title}>Lista de Compras</Text>
-        <FlatList
-          data={items}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+      <Text style={styles.title}>Lista de Compras</Text>
+      <FlatList
+        data={items}
+        style={{width:"100%"}}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          ref={inputRef} // Attach the ref to the TextInput
+          mode="outlined"
+          label="Adicionar item"
+          value={newItem}
+          onChangeText={setNewItem}
+          style={styles.input}
         />
-        <View style={styles.inputContainer}>
-          <TextInput
-            mode="outlined"
-            label="Adicionar item"
-            value={newItem}
-            onChangeText={setNewItem}
-            style={styles.input}
-          />
-          <Button 
-            mode="elevated" 
-            onPress={addItem}
-            buttonColor={colorPrimary}
-            textColor="white"
-            style={styles.button}
-          >
-            Adicionar
-          </Button>
-        </View>
+        <Button
+          mode="contained"
+          onPress={addItem}
+          style={styles.addButton}
+        >
+          Adicionar
+        </Button>
       </View>
     </View>
   );
@@ -136,57 +112,54 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 24,
     backgroundColor: "#f4f4f4",
-  },
-  main: {
-    flex: 1,
     width: '100%',
-    maxWidth: 960,
-    marginHorizontal: "auto",
+
   },
   title: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
   },
-  item: {
-    padding: 16,
-    borderRadius: 8,
-    marginVertical: 8,
-    flexDirection: 'row',
+  list: {
+    flexGrow: 1,
+    width: '100%',
+  },
+  itemContainer: {
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  itemSelected: {
-    backgroundColor: colorPrimary,
-  },
-  itemUnselected: {
+    padding: 16,
+    marginVertical: 8,
     backgroundColor: "#ffffff",
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: colorPrimary,
+    borderColor: "#ddd",
+    width: '100%',
   },
   itemText: {
     fontSize: 18,
-    flex: 1,
+    marginBottom: 8,
   },
-  itemTextSelected: {
-    color: "#ffffff",
-  },
-  itemActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  removeButton: {
+    width: '100%',
+    borderRadius: 5,
+    padding: 5,
+    marginTop: 15,
+    backgroundColor:"red",
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'column',
+    alignItems: 'center',
     marginTop: 16,
+    width: '100%',
   },
   input: {
-    flex: 1,
-    marginRight: 8,
-    fontSize: 18,
+    width: '100%',
+    marginBottom: 8,
   },
-  button: {
-    borderRadius: 8,
-    
+  addButton: {
+    width: '100%',
+    borderRadius: 5,
+    padding: 5,
+    marginTop: 15,
   },
 });

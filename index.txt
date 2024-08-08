@@ -1,0 +1,198 @@
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleSheet, Text, View, FlatList, Alert } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button, TextInput, IconButton } from 'react-native-paper';
+import { colorPrimary } from "../../constants/constants";
+
+// Define a type for the items
+interface Item {
+  id: string;
+  name: string;
+  selected: boolean;
+}
+
+export default function DataCompras() {
+  const [items, setItems] = useState<Item[]>([]);
+  const [newItem, setNewItem] = useState<string>('');
+
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  const loadItems = async () => {
+    try {
+      const storedItems = await AsyncStorage.getItem('items');
+      if (storedItems) {
+        setItems(JSON.parse(storedItems));
+      }
+    } catch (error) {
+      console.error('Failed to load items from AsyncStorage:', error);
+    }
+  };
+
+  const saveItems = async (items: Item[]) => {
+    try {
+      await AsyncStorage.setItem('items', JSON.stringify(items));
+    } catch (error) {
+      console.error('Failed to save items to AsyncStorage:', error);
+    }
+  };
+
+
+
+  const addItem = () => {
+    if (newItem.trim() !== '') {
+      const newItemObj = {
+        id: (items.length + 1).toString(),
+        name: newItem,
+        selected: false
+      };
+      const updatedItems = [...items, newItemObj];
+      setItems(updatedItems);
+      saveItems(updatedItems);
+      setNewItem('');
+      return;
+    }
+
+  alert("Ocorreu um erro");
+  };
+
+  const removeItem = (id: string) => {
+
+     const updatedItems = items.filter(item => item.id !== id);
+    setItems(updatedItems);
+    saveItems(updatedItems);
+    return
+    Alert.alert(
+      "Remover Item",
+      "Tem certeza de que deseja remover este item?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Remover",
+          onPress: () => {
+            const updatedItems = items.filter(item => item.id !== id);
+            setItems(updatedItems);
+            saveItems(updatedItems);
+          }
+        }
+      ]
+    );
+  };
+
+  const renderItem = ({ item }: { item: Item }) => (
+    <View style={[styles.item, item.selected ? styles.itemSelected : styles.itemUnselected]}>
+      <Text style={[styles.itemText, item.selected && styles.itemTextSelected]}>
+        {item.name}
+      </Text>
+      <View style={styles.itemActions}>
+        {item.selected && (
+          <IconButton
+            icon="check-circle"
+            size={24}
+            iconColor={"#28a745"}
+          />
+        )}
+        <IconButton
+          icon="delete"
+          size={24}
+          iconColor="red"
+          onPress={() => removeItem(item.id)}
+        />
+      </View>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.main}>
+        <Text style={styles.title}>Lista de Compras</Text>
+        <FlatList
+          data={items}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            mode="outlined"
+            label="Adicionar item"
+            value={newItem}
+            onChangeText={setNewItem}
+            style={styles.input}
+          />
+          <Button 
+            mode="elevated" 
+            onPress={addItem}
+            buttonColor={colorPrimary}
+            textColor="white"
+            style={styles.button}
+          >
+            Adicionar
+          </Button>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    padding: 24,
+    backgroundColor: "#f4f4f4",
+  },
+  main: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 960,
+    marginHorizontal: "auto",
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 16,
+  },
+  item: {
+    padding: 16,
+    borderRadius: 8,
+    marginVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor:colorPrimary
+  },
+  itemSelected: {
+    backgroundColor: colorPrimary,
+  },
+  itemUnselected: {
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: colorPrimary,
+  },
+  itemText: {
+    fontSize: 18,
+    flex: 1,
+  },
+  itemTextSelected: {
+    color: "#ffffff",
+  },
+  itemActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16,
+  },
+  input: {
+    flex: 1,
+    marginRight: 8,
+    fontSize: 18,
+  },
+  button: {
+    borderRadius: 8,
+    
+  },
+});

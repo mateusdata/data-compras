@@ -21,12 +21,12 @@ export default function _layout() {
         }}>
             <Stack.Screen name='index' options={{
                 headerTitle: "Home",
-                headerRight: () => <Calculator icon="calculator" route='regraDeTres' />
+               // headerRight: () => <Calculator icon="calculator" route='regraDeTres' />
             }} />
 
             <Stack.Screen name='regraDeTres' options={{
                 headerTitle: "Regra de 3",
-                headerRight: () => <Calculator icon="home" route='/' />
+               // headerRight: () => <Calculator icon="home" route='/' />
             }} />
 
         </Stack>
