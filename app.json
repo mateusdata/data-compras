@@ -20,7 +20,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
-        "versionCode": 10
+        "versionCode": 12
       },
       "package": "com.mateusdata.compras"
     },
