@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, FlatList, KeyboardAvoidingView, Platform, Button, useColorScheme, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, View } from '@/components/Themed';
 import { TextInput, List, IconButton } from 'react-native-paper';
 import { colorPrymary } from '@/constants/Colors';
+import { Link, Stack } from 'expo-router';
+import { DarkTheme } from '@react-navigation/native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function ShoppingListScreen() {
   const [items, setItems] = useState<string[]>([]);
@@ -46,11 +49,32 @@ export default function ShoppingListScreen() {
     saveItems(updatedItems);
   };
 
+  const colorScheme = useColorScheme();
   return (
-    <KeyboardAvoidingView
+    <View
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+
     >
+
+      <Stack.Screen
+        options={{
+         headerTitle: 'Home',
+          headerRight: () => (
+            <Link href="/role" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="info-circle"
+                    size={25}
+                    color={colorScheme === 'dark' ? DarkTheme.colors.text : 'white'}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
       <Text style={styles.title}>Data Compras</Text>
       <FlatList
         data={items}
@@ -73,12 +97,13 @@ export default function ShoppingListScreen() {
       <TextInput
         label="Adicionar item"
         value={newItem}
+        mode='outlined'
         onChangeText={setNewItem}
-        style={styles.input}
         onSubmitEditing={addItem}
         returnKeyType="done"
+        activeOutlineColor={colorPrymary}
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

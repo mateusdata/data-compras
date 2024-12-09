@@ -10,9 +10,12 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { colorPrymary } from '@/constants/Colors';
 import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
+
+
+
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'index',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -47,10 +50,16 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <StatusBar style={colorScheme === 'dark'  ? 'light' : 'light'} />
-      <Stack>
-        <Stack.Screen name="shopping"  options={{ headerShown: false, }} />
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'light'} />
+      <Stack screenOptions={{
+        headerStyle: {
+          backgroundColor: colorScheme === 'dark' ? "#191c1b" : colorPrymary,
+        },
+        headerTintColor: colorScheme === 'dark' ? DarkTheme.colors.text : "white",
+      }}>
+        <Stack.Screen name="index"  />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="role" options={{ presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>
   );
