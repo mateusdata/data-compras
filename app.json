@@ -3,30 +3,33 @@
     "name": "Data compras",
     "slug": "data-compras",
     "scheme": "datacompras",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.mateusdata.compras"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "versionCode": 12
-      },
-      "package": "com.mateusdata.compras"
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
     },
+    "plugins": [
+      "expo-router"
+    ],
     "extra": {
       "router": {
         "origin": false
@@ -35,10 +38,9 @@
         "projectId": "649381e8-d1a9-44de-b4f2-284e8f993b43"
       }
     },
-    "plugins": [
-      "expo-router"
-    
-    ],
-    "owner": "mateusdata"
+    "owner": "mateusdata",
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
