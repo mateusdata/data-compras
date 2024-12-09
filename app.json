@@ -14,14 +14,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mateusdata.compras"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-       "package": "com.mateusdata.compras"
+      "package": "com.mateusdata.compras"
     },
     "web": {
       "bundler": "metro",
@@ -29,7 +30,14 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-6242824020711835~1164268856",
+          "iosAppId": "ca-app-pub-6242824020711835~1164268856"
+        }
+      ]
     ],
     "extra": {
       "router": {

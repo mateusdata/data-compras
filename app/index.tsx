@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, FlatList, KeyboardAvoidingView, Platform, Button, useColorScheme, Pressable } from 'react-native';
+import { StyleSheet, FlatList, useColorScheme, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, View } from '@/components/Themed';
 import { TextInput, List, IconButton } from 'react-native-paper';
@@ -7,14 +7,24 @@ import { colorPrymary } from '@/constants/Colors';
 import { Link, Stack } from 'expo-router';
 import { DarkTheme } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { TestIds, useInterstitialAd } from 'react-native-google-mobile-ads';
 
 export default function ShoppingListScreen() {
   const [items, setItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState<string>('');
+  const { isLoaded, isClosed, load, show } = useInterstitialAd("ca-app-pub-6242824020711835/2624690184");
 
   useEffect(() => {
     loadItems();
-  }, []);
+    load();
+    
+  }, [load]);
+
+  useEffect(() => {
+    if (isClosed) {
+      load();
+    }
+  }, [isClosed, load]);
 
   const loadItems = async () => {
     try {
@@ -30,6 +40,11 @@ export default function ShoppingListScreen() {
   const saveItems = async (items: string[]) => {
     try {
       await AsyncStorage.setItem('shoppingItems', JSON.stringify(items));
+      if (isLoaded) {
+        show();
+      } else {
+        console.error('Ad is not loaded yet.');
+      }
     } catch (error) {
       console.error(error);
     }
@@ -51,14 +66,10 @@ export default function ShoppingListScreen() {
 
   const colorScheme = useColorScheme();
   return (
-    <View
-      style={styles.container}
-
-    >
-
+    <View style={styles.container}>
       <Stack.Screen
         options={{
-         headerTitle: 'Home',
+          headerTitle: 'Home',
           headerRight: () => (
             <Link href="/role" asChild>
               <Pressable>
@@ -119,14 +130,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   listContainer: {
-    paddingBottom: 80, // Add padding to avoid overlap with the input
+    paddingBottom: 80,
+    
   },
   input: {
     position: 'absolute',
     bottom: 10,
     left: '5%',
     right: '5%',
-    backgroundColor: 'white', // Required for TextInput from react-native-paper
+    backgroundColor: 'white',
+    
     borderRadius: 4,
     paddingHorizontal: 10,
     borderWidth: 1,
