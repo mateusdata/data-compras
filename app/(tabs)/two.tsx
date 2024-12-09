@@ -1,108 +1,170 @@
-import React, { useState } from 'react';
-import { StyleSheet, TextInput, Button, Text, View, ScrollView } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {  StyleSheet, ScrollView, Dimensions, useColorScheme} from "react-native";
+import { TextInput, Button } from "react-native-paper";
+import { AntDesign } from '@expo/vector-icons';
+import { Pressable } from "react-native";
+import { Text, View } from "@/components/Themed";
 
-export default function RuleOfThreeCalculator() {
-  const [a, setA] = useState('');
-  const [b, setB] = useState('');
-  const [c, setC] = useState('');
-  const [result, setResult] = useState<string | number | null>(null);
+const RuleOfThree: React.FC = () => {
+  const [x, setX] = useState<string>("X");
+  const [a, setA] = useState<string>("");
+  const [b, setB] = useState<string>("");
+  const [c, setC] = useState<string>("");
+  const [erro, setErro] = useState<boolean>(false);
+  const colorScheme = useColorScheme(); 
+  const limparInputs = () => {
+    setX("X");
+    setA("");
+    setB("");
+    setC("");
+    setErro(false);
+  };
 
-  const calculate = () => {
-    if (a && b && c) {
-      const x = (parseFloat(b) * parseFloat(c)) / parseFloat(a);
-      setResult(x);
+  const regraTres = () => {
+    const resultado = (parseFloat(b) / parseFloat(a)) * parseFloat(c);
+    if (!isNaN(resultado)) {
+      setX(resultado.toFixed(2));
+      setErro(false);
     } else {
-      setResult('Por favor, preencha todos os campos.');
+      setErro(true);
+      setX("X");
     }
   };
 
+  useEffect(() => {
+    if (a && b && c) regraTres();
+  }, [a, b, c]);
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Calculadora de Regra de Três Simples</Text>
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>A</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={a}
-          onChangeText={setA}
-          placeholder="Valor de A"
-        />
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Calculadora de Regra de Três Simples</Text>
+        <Text style={[styles.title,{color:"white"}]}>{colorScheme}</Text>
+
       </View>
-      <Text style={styles.equalsText}>ESTÁ PARA</Text>
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>B</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={b}
-          onChangeText={setB}
-          placeholder="Valor de B"
-        />
-      </View>
-      <Text style={styles.equalsText}>ASSIM COMO</Text>
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>C</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={c}
-          onChangeText={setC}
-          placeholder="Valor de C"
-        />
-      </View>
-      <Button title="Calcular" onPress={calculate} />
-      {result !== null && (
-        <View style={styles.resultContainer}>
-          <Text style={styles.resultText}>Resultado: {result}</Text>
+      <View style={styles.body}>
+        <Text style={styles.subtitle}>Opções</Text>
+        <View style={styles.row}>
+          <TextInput
+            placeholder="A"
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={setA}
+            value={a}
+            mode="outlined"
+          />
+          <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
+          <TextInput
+            placeholder="B"
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={setB}
+            value={b}
+            mode="outlined"
+          />
         </View>
-      )}
+        <Text style={styles.label}>ASSIM COMO</Text>
+        <View style={styles.row}>
+          <TextInput
+            placeholder="C"
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={setC}
+            value={c}
+            mode="outlined"
+          />
+          <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
+          <TextInput
+            placeholder="Resultado"
+            keyboardType="numeric"
+            style={styles.result}
+            value={x}
+            mode="outlined"
+            editable={false}
+          />
+        </View>
+        {c && (
+          <Pressable onPress={limparInputs} style={styles.button}>
+            <Text style={styles.buttonText}>Limpar</Text>
+          </Pressable>
+        )}
+        {erro && <Text style={styles.errorText}>Erro! Informe apenas números</Text>}
+      </View>
     </ScrollView>
   );
 }
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    flex: 1,
+    padding: 10,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
   },
   title: {
+    fontSize: 30,
+    textAlign: "left",
+  },
+  body: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30,
+  },
+  subtitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24,
-    textAlign: 'center',
+    marginBottom: 30,
   },
-  inputGroup: {
-    width: '80%',
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 8,
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingLeft: 8,
-    borderRadius: 4,
+    padding: 5,
+    width: width * 0.3,
+    height: 50,
+    fontSize: 30,
+    textAlign: "center",
   },
-  equalsText: {
-    fontSize: 18,
-    marginVertical: 8,
-    textAlign: 'center',
+  result: {
+    padding: 5,
+    width: width * 0.3,
+    height: 50,
+    fontSize: 30,
+    textAlign: "center",
+    color: "orange",
+
   },
-  resultContainer: {
-    marginTop: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
+  icon: {
+    marginTop: 10,
+    padding: 5,
   },
-  resultText: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  label: {
+    fontSize: 20,
+  },
+  button: {
+    marginBottom: 50,
+    backgroundColor: "#66b2ff", // Azul mais claro
+    borderRadius: 8,
+    width: 150,
+    height: 50,
+    marginTop: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+  },
+  errorText: {
+    color: "red",
   },
 });
+
+export default RuleOfThree;
