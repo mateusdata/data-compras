@@ -7,17 +7,18 @@ import { colorPrymary } from '@/constants/Colors';
 import { Link, Stack } from 'expo-router';
 import { DarkTheme } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { TestIds, useInterstitialAd } from 'react-native-google-mobile-ads';
+import { TestIds, useInterstitialAd, BannerAd, useRewardedAd, useAppOpenAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { adUnitId, bannerAdUnitId } from '@/utils/adUnitId';
 
 export default function ShoppingListScreen() {
   const [items, setItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState<string>('');
-  const { isLoaded, isClosed, load, show } = useInterstitialAd("ca-app-pub-6242824020711835/2624690184");
+  const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId);
 
   useEffect(() => {
     loadItems();
     load();
-    
+
   }, [load]);
 
   useEffect(() => {
@@ -66,55 +67,68 @@ export default function ShoppingListScreen() {
 
   const colorScheme = useColorScheme();
   return (
-    <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          headerTitle: 'Home',
-          headerRight: () => (
-            <Link href="/role" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={colorScheme === 'dark' ? DarkTheme.colors.text : 'white'}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
+
+    <>
+      <BannerAd
+        unitId={bannerAdUnitId}
+        size={BannerAdSize.FULL_BANNER}
+        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
       />
-      <Text style={styles.title}>Data Compras</Text>
-      <FlatList
-        data={items}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <List.Item
-            title={item}
-            right={() => (
-              <IconButton
-                icon="delete"
-                iconColor="red"
-                onPress={() => removeItem(index)}
-              />
-            )}
-            style={styles.listItem}
-          />
-        )}
-        contentContainerStyle={styles.listContainer}
-      />
-      <TextInput
-        label="Adicionar item"
-        value={newItem}
-        mode='outlined'
-        onChangeText={setNewItem}
-        onSubmitEditing={addItem}
-        returnKeyType="done"
-        activeOutlineColor={colorPrymary}
-      />
-    </View>
+      
+      <View style={styles.container}>
+
+        <Stack.Screen
+          options={{
+            headerTitle: 'Home',
+            headerRight: () => (
+              <Link href="/role" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <FontAwesome
+                      name="info-circle"
+                      size={25}
+                      color={colorScheme === 'dark' ? DarkTheme.colors.text : 'white'}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+            ),
+          }}
+        />
+        <Text style={styles.title}>Data Compras</Text>
+        <FlatList
+          data={items}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <List.Item
+              title={item}
+              titleStyle={colorScheme === 'dark' ? { color: 'white' } : {}}
+              contentStyle={colorScheme === 'dark' ? { backgroundColor: '#1A1A1A' } : {}}
+              right={() => (
+                <IconButton
+                  icon="delete"
+                  iconColor="red"
+                  onPress={() => removeItem(index)}
+                />
+              )}
+              style={styles.listItem}
+            />
+          )}
+          contentContainerStyle={styles.listContainer}
+        />
+        <TextInput
+          label="Adicionar item"
+          value={newItem}
+          mode='outlined'
+          onChangeText={setNewItem}
+          onSubmitEditing={addItem}
+          returnKeyType="done"
+          activeOutlineColor={colorPrymary}
+        />
+      </View>
+
+    </>
   );
 }
 
@@ -131,7 +145,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingBottom: 80,
-    
+
   },
   input: {
     position: 'absolute',
@@ -139,7 +153,7 @@ const styles = StyleSheet.create({
     left: '5%',
     right: '5%',
     backgroundColor: 'white',
-    
+
     borderRadius: 4,
     paddingHorizontal: 10,
     borderWidth: 1,
