@@ -5,7 +5,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { Text, View } from "@/components/Themed";
 import { Link, Stack } from "expo-router";
 import { BannerAd, BannerAdSize, useInterstitialAd } from "react-native-google-mobile-ads";
-import { adUnitId, bannerAdUnitId } from "@/utils/adUnitId";
+import { adUnitId, bannerAdUnitId, bannerAdUnitId2 } from "@/utils/adUnitId";
+import { colorPrymary } from "@/constants/Colors";
 
 const RuleOfThree: React.FC = () => {
   const [x, setX] = useState<string>("X");
@@ -72,6 +73,7 @@ const RuleOfThree: React.FC = () => {
           <Text style={styles.subtitle}>Opções</Text>
           <View style={styles.row}>
             <TextInput
+              activeOutlineColor={colorPrymary}
               placeholder="A"
               keyboardType="numeric"
               style={styles.input}
@@ -81,6 +83,7 @@ const RuleOfThree: React.FC = () => {
             />
             <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
             <TextInput
+              activeOutlineColor={colorPrymary}
               placeholder="B"
               keyboardType="numeric"
               style={styles.input}
@@ -92,6 +95,7 @@ const RuleOfThree: React.FC = () => {
           <Text style={styles.label}>ASSIM COMO</Text>
           <View style={styles.row}>
             <TextInput
+              activeOutlineColor={colorPrymary}
               placeholder="C"
               keyboardType="numeric"
               style={styles.input}
@@ -101,11 +105,13 @@ const RuleOfThree: React.FC = () => {
             />
             <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
             <TextInput
+              activeOutlineColor={colorPrymary}
               placeholder="Resultado"
               keyboardType="numeric"
               style={styles.result}
               value={x}
               mode="outlined"
+              outlineColor={x !== "X" && a && b && c ? "green" : undefined}
               editable={false}
             />
           </View>
@@ -125,7 +131,7 @@ const RuleOfThree: React.FC = () => {
       </ScrollView>
 
       <BannerAd
-        unitId={bannerAdUnitId}
+        unitId={bannerAdUnitId2}
         size={BannerAdSize.FULL_BANNER}
         requestOptions={{ requestNonPersonalizedAdsOnly: true }}
       />

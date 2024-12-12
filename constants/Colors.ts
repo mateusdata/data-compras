@@ -1,6 +1,9 @@
-const tintColorLight = '#2f95dc';
+const tintColorLight = '#FF8E3A';
 const tintColorDark = '#fff';
-export const colorPrymary = '#407aff';
+export const colorPrymary = '#FF7500';
+export const colorBlack = '#1C1C1C';
+
+
 export default {
   light: {
     text: '#000',
