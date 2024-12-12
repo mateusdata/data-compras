@@ -2,7 +2,9 @@
 
 # dependencies
 node_modules/
-
+android
+Android
+ios
 # Expo
 .expo/
 dist/
@@ -16,6 +18,10 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
+*.apk
+*.aab
+*.keystore
+
 
 # Metro
 .metro-health-check*
