@@ -43,7 +43,7 @@ export default function ShoppingListScreen() {
     try {
       await AsyncStorage.setItem('shoppingItems', JSON.stringify(items));
       if (isLoaded) {
-        //show();
+        show();
       } else {
         console.error('Ad is not loaded yet.');
       }
