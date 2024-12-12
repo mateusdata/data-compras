@@ -22,7 +22,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mateusdata.compras"
+      "package": "com.mateusdata.compras",
+      "permissions": [ "com.google.android.gms.permission.AD_ID" ]
     },
     "web": {
       "bundler": "metro",
