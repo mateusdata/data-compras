@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, FlatList, useColorScheme, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Text, View } from '@/components/Themed';
 import { TextInput, List, IconButton } from 'react-native-paper';
-import { colorPrymary } from '@/constants/Colors';
 import { Link, Stack } from 'expo-router';
-import { DarkTheme } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { TestIds, useInterstitialAd, BannerAd, useRewardedAd, useAppOpenAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { TestIds, useInterstitialAd, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { colorBlack, colorPrymary } from '@/constants/Colors';
+import { DarkTheme } from '@react-navigation/native';
 import { adUnitId, bannerAdUnitId } from '@/utils/adUnitId';
+import MainList from '@/components/MainList';
+import { Text, View } from '@/components/Themed';
+import Toast from 'react-native-toast-message';
 
 export default function ShoppingListScreen() {
   const [items, setItems] = useState<string[]>([]);
@@ -18,7 +20,6 @@ export default function ShoppingListScreen() {
   useEffect(() => {
     loadItems();
     load();
-
   }, [load]);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function ShoppingListScreen() {
     try {
       await AsyncStorage.setItem('shoppingItems', JSON.stringify(items));
       if (isLoaded) {
-        show();
+        //show();
       } else {
         console.error('Ad is not loaded yet.');
       }
@@ -51,13 +52,25 @@ export default function ShoppingListScreen() {
     }
   };
 
-  const addItem = () => {
-    if (newItem.trim() === "") return;
-    const updatedItems = [...items, newItem];
+  const addItem = (item: string) => {
+    if (item.trim() === "") return;
+    if (items.includes(item)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Este item já está na lista.',
+        position: 'top',
+        text1Style: { fontSize: 16 },
+        text2Style: { fontSize: 14 },
+      });
+      return;
+    }
+    const updatedItems = [...items, item];
     setItems(updatedItems);
     setNewItem('');
     saveItems(updatedItems);
   };
+  
 
   const removeItem = (index: number) => {
     const updatedItems = items.filter((_, i) => i !== index);
@@ -67,28 +80,23 @@ export default function ShoppingListScreen() {
 
   const colorScheme = useColorScheme();
   return (
-
     <>
-      <BannerAd
-        unitId={bannerAdUnitId}
-        size={BannerAdSize.FULL_BANNER}
-        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
-      />
-      
-      <View style={styles.container}>
 
+     
+    
+      <View style={styles.container}>
         <Stack.Screen
           options={{
-            headerTitle: 'Home',
+            headerTitle: 'Data Compras',
             headerRight: () => (
               <Link href="/role" asChild>
-                <Pressable>
+                <Pressable style={{ padding: 10 }}>
                   {({ pressed }) => (
                     <FontAwesome
-                      name="info-circle"
-                      size={25}
+                      name="calculator"
+                      size={20}
                       color={colorScheme === 'dark' ? DarkTheme.colors.text : 'white'}
-                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                      style={{ marginRight: 0, opacity: pressed ? 0.5 : 1 }}
                     />
                   )}
                 </Pressable>
@@ -96,10 +104,26 @@ export default function ShoppingListScreen() {
             ),
           }}
         />
-        <Text style={styles.title}>Data Compras</Text>
+
+        <TextInput
+          label={colorScheme === 'dark' ? '' : 'Adicionar item'}
+          placeholder='Adicionar item'
+          value={newItem}
+          outlineColor={colorScheme === 'dark' ? colorBlack : colorPrymary}
+          contentStyle={colorScheme === 'dark' ? { backgroundColor: colorBlack, color: "white" } : {}}
+
+          mode="outlined"
+          onChangeText={setNewItem}
+          onSubmitEditing={() => addItem(newItem)}
+          returnKeyType="done"
+          activeOutlineColor={colorPrymary}
+        />
+         <Toast bottomOffset={150} />
+
         <FlatList
           data={items}
           keyExtractor={(item, index) => index.toString()}
+          ListFooterComponent={<MainList onAddItem={addItem} />}
           renderItem={({ item, index }) => (
             <List.Item
               title={item}
@@ -108,7 +132,7 @@ export default function ShoppingListScreen() {
               right={() => (
                 <IconButton
                   icon="delete"
-                  iconColor="red"
+                  iconColor={"#FF7F7F"}
                   onPress={() => removeItem(index)}
                 />
               )}
@@ -117,17 +141,13 @@ export default function ShoppingListScreen() {
           )}
           contentContainerStyle={styles.listContainer}
         />
-        <TextInput
-          label="Adicionar item"
-          value={newItem}
-          mode='outlined'
-          onChangeText={setNewItem}
-          onSubmitEditing={addItem}
-          returnKeyType="done"
-          activeOutlineColor={colorPrymary}
-        />
       </View>
 
+      <BannerAd
+        unitId={bannerAdUnitId}
+        size={BannerAdSize.FULL_BANNER}
+        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+      />
     </>
   );
 }
@@ -145,19 +165,6 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingBottom: 80,
-
-  },
-  input: {
-    position: 'absolute',
-    bottom: 10,
-    left: '5%',
-    right: '5%',
-    backgroundColor: 'white',
-
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
   },
   listItem: {
     borderBottomWidth: 1,
