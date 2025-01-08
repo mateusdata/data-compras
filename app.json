@@ -22,7 +22,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mateusdata.compras"
+      "package": "com.mateusdata.compras",
+      "permissions": [ "com.google.android.gms.permission.AD_ID" ]
     },
     "web": {
       "bundler": "metro",
@@ -34,8 +35,8 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-6242824020711835~1164268856",
-          "iosAppId": "ca-app-pub-6242824020711835~1164268856"
+          "androidAppId": "ca-app-pub-6242824020711835~1164268856"
+          
         }
       ]
     ],
