@@ -58,12 +58,6 @@ const RuleOfThree: React.FC = () => {
 
   return (
 
-    <>
-      <BannerAd
-        unitId={bannerAdUnitId}
-        size={BannerAdSize.FULL_BANNER}
-        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
-      />
       <ScrollView style={styles.container}>
 
         <View style={styles.header}>
@@ -129,13 +123,6 @@ const RuleOfThree: React.FC = () => {
           }}
         />
       </ScrollView>
-
-      <BannerAd
-        unitId={bannerAdUnitId2}
-        size={BannerAdSize.FULL_BANNER}
-        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
-      />
-    </>
   );
 }
 

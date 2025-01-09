@@ -33,7 +33,7 @@ export default function MainList({ onAddItem }: MainListProps) {
     { id: 15, name: 'Batata' },
     { id: 16, name: 'Cebola' },
   ]);
-   
+
 
   const renderItem = ({ item }: { item: FormatItem }) => (
     <Pressable
@@ -41,7 +41,7 @@ export default function MainList({ onAddItem }: MainListProps) {
       style={[styles.pressable, { backgroundColor: colorScheme === 'dark' ? '#1C1C1C' : '#F5F5F5' }]}
       onPress={() => onAddItem(item.name)}
     >
-      <FontAwesome name="plus" color={colorPrymary} size={12} />
+      <FontAwesome name="plus" color={colorScheme === 'dark' ? "white" : colorPrymary} size={12} />
       <Text style={styles.text}>{item.name}</Text>
     </Pressable>
   );
