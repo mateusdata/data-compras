@@ -1,7 +1,8 @@
 import { Text, View } from '@/components/Themed';
 import { colorPrymary } from '@/constants/Colors';
-import { rewardedInterstitialAdUnitId } from '@/utils/adUnitId';
+import { rewardedInterstitialAdUnitId, rewardedInterstitialAdUnitIdTwo } from '@/utils/adUnitId';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
@@ -14,12 +15,8 @@ import {
 import { ActivityIndicator, Button } from 'react-native-paper';
 
 // Ad Unit IDs
-const adUnitId1 = __DEV__
-  ? TestIds.REWARDED_INTERSTITIAL
-  : 'ca-app-pub-xxxxxxxxxxxxx/1111111111111';
-const adUnitId2 = __DEV__
-  ? TestIds.REWARDED_INTERSTITIAL
-  : 'ca-app-pub-xxxxxxxxxxxxx/2222222222222';
+const adUnitId1 = rewardedInterstitialAdUnitId;
+const adUnitId2 = rewardedInterstitialAdUnitIdTwo;
 
 // Create two independent instances
 const rewardedInterstitial1 = RewardedInterstitialAd.createForAdRequest(adUnitId1, {
@@ -49,34 +46,47 @@ function Premium() {
     fetchMoney();
   }, []);
 
-  // Setup for Ad Instance 1
-  useEffect(() => {
-    const unsubscribeLoaded1 = rewardedInterstitial1.addAdEventListener(
-      RewardedAdEventType.LOADED,
-      () => setLoaded1(true),
-    );
-    const unsubscribeEarned1 = rewardedInterstitial1.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      reward => saveMoney(reward.amount),
-    );
-    const unsubscribeClosed1 = rewardedInterstitial1.addAdEventListener(AdEventType.CLOSED, () => {
-      setLoaded1(false);
-      rewardedInterstitial1.load();
-    });
-    rewardedInterstitial1.load();
 
-    return () => {
-      unsubscribeLoaded1();
-      unsubscribeEarned1();
-      unsubscribeClosed1();
-    };
-  }, []);
+  useFocusEffect(
+
+    React.useCallback(() => {
+
+      const unsubscribeLoaded1 = rewardedInterstitial1.addAdEventListener(
+        RewardedAdEventType.LOADED,
+        () => {
+
+          console.log("Carregando anúncio 1");
+          setLoaded1(true)
+        },
+      );
+      const unsubscribeEarned1 = rewardedInterstitial1.addAdEventListener(
+        RewardedAdEventType.EARNED_REWARD,
+        reward => saveMoney(reward.amount),
+      );
+      const unsubscribeClosed1 = rewardedInterstitial1.addAdEventListener(AdEventType.CLOSED, () => {
+        setLoaded1(false);
+        rewardedInterstitial1.load();
+      });
+      rewardedInterstitial1.load();
+
+      return () => {
+        unsubscribeLoaded1();
+        unsubscribeEarned1();
+        unsubscribeClosed1();
+      };
+    }, []),
+  );
 
   // Setup for Ad Instance 2
   useEffect(() => {
+
     const unsubscribeLoaded2 = rewardedInterstitial2.addAdEventListener(
       RewardedAdEventType.LOADED,
-      () => setLoaded2(true),
+      () => {
+
+        console.log("Carregando anúncio 2");
+        setLoaded2(true)
+      },
     );
     const unsubscribeEarned2 = rewardedInterstitial2.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
@@ -105,30 +115,40 @@ function Premium() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Total de crédito</Text>
-      <Text style={styles.title}>{`R$: ${money},00`}</Text>
+      <Text style={[styles.title, { paddingBottom: 18 }]}>Ganhe créditos para recompensas futuras</Text>
+      <Text style={styles.title}>{`Meu crédito: ${money},00`}</Text>
+      {loaded1 ?
 
-      <Button
-        disabled={!loaded1}
-        loading={!loaded1}
-        buttonColor={colorPrymary}
-        textColor="white"
-        onPress={showRewardedInterstitial1}
-        style={styles.button}
-      >
-        {loaded1 ? 'Ganhar crédito do Anúncio 1' : 'Carregando anúncio 1...'}
-      </Button>
+        <Button
+          mode='text'
+          buttonColor={colorPrymary}
+          textColor="white"
+          onPress={showRewardedInterstitial1}
+          style={styles.button}
+        >
+          Ganhar crédito do Anúncio 1
+        </Button>
+        : <View>
+          <ActivityIndicator animating={true} size={18} color={colorPrymary} />
+          <Text style={styles.title}>Carregando Anúncio 1</Text>
+        </View>
+      }
 
-      <Button
-        disabled={!loaded2}
-        loading={!loaded2}
-        buttonColor={colorPrymary}
-        textColor="white"
-        onPress={showRewardedInterstitial2}
-        style={styles.button}
-      >
-        {loaded2 ? 'Ganhar crédito do Anúncio 2' : 'Carregando anúncio 2...'}
-      </Button>
+      {loaded2 ?
+        <Button
+          mode='text'
+          buttonColor={colorPrymary}
+          textColor="white"
+          onPress={showRewardedInterstitial2}
+          style={styles.button}
+        >
+          Ganhar crédito do Anúncio 2
+        </Button>
+        : <View>
+          <ActivityIndicator animating={true} size={18} color={colorPrymary} />
+          <Text style={styles.title}>Carregando Anúncio 2</Text>
+        </View>
+      }
     </View>
   );
 }
@@ -140,13 +160,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
     padding: 20,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
