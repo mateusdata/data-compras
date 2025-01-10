@@ -58,71 +58,75 @@ const RuleOfThree: React.FC = () => {
 
   return (
 
-      <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}>
 
-        <View style={styles.header}>
-          <Text style={styles.title}>Calculadora de Regra de Três Simples</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Calculadora de Regra de Três Simples</Text>
+      </View>
+      <View style={styles.body}>
+        <Text style={styles.subtitle}>Opções</Text>
+        <View style={styles.row}>
+          <TextInput
+            contentStyle={{ backgroundColor: colorScheme === "dark" ? "black" : "white", color: colorScheme === "dark" ? "white" : "black" }}
+            activeOutlineColor={colorPrymary}
+            placeholder="A"
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={setA}
+            value={a}
+            mode="outlined"
+          />
+          <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
+          <TextInput
+            contentStyle={{ backgroundColor: colorScheme === "dark" ? "black" : "white", color: colorScheme === "dark" ? "white" : "black" }}
+            activeOutlineColor={colorPrymary}
+            placeholder="B"
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={setB}
+            value={b}
+            mode="outlined"
+          />
         </View>
-        <View style={styles.body}>
-          <Text style={styles.subtitle}>Opções</Text>
-          <View style={styles.row}>
-            <TextInput
-              activeOutlineColor={colorPrymary}
-              placeholder="A"
-              keyboardType="numeric"
-              style={styles.input}
-              onChangeText={setA}
-              value={a}
-              mode="outlined"
-            />
-            <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
-            <TextInput
-              activeOutlineColor={colorPrymary}
-              placeholder="B"
-              keyboardType="numeric"
-              style={styles.input}
-              onChangeText={setB}
-              value={b}
-              mode="outlined"
-            />
-          </View>
-          <Text style={styles.label}>ASSIM COMO</Text>
-          <View style={styles.row}>
-            <TextInput
-              activeOutlineColor={colorPrymary}
-              placeholder="C"
-              keyboardType="numeric"
-              style={styles.input}
-              onChangeText={setC}
-              value={c}
-              mode="outlined"
-            />
-            <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
-            <TextInput
-              activeOutlineColor={colorPrymary}
-              placeholder="Resultado"
-              keyboardType="numeric"
-              style={styles.result}
-              value={x}
-              mode="outlined"
-              outlineColor={x !== "X" && a && b && c ? "green" : undefined}
-              editable={false}
-            />
-          </View>
-          {c && (
-            <Pressable onPress={limparInputs} style={styles.button}>
-              <Text style={styles.buttonText}>Limpar</Text>
-            </Pressable>
-          )}
-          {erro && <Text style={styles.errorText}>Erro! Informe apenas números</Text>}
+        <Text style={styles.label}>ASSIM COMO</Text>
+        <View style={styles.row}>
+          <TextInput
+            contentStyle={{ backgroundColor: colorScheme === "dark" ? "black" : "white", color: colorScheme === "dark" ? "white" : "black" }}
+            activeOutlineColor={colorPrymary}
+            placeholder="C"
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={setC}
+            value={c}
+            mode="outlined"
+          />
+          <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
+          <TextInput
+            contentStyle={{ backgroundColor: colorScheme === "dark" ? "black" : "white", color: colorScheme === "dark" ? "white" : "black" }}
+            activeOutlineColor={colorPrymary}
+            placeholder="Resultado"
+            keyboardType="numeric"
+            style={styles.result}
+            value={x}
+            mode="outlined"
+            outlineColor={x !== "X" && a && b && c ? "green" : undefined}
+            editable={false}
+          />
         </View>
-        <Stack.Screen
-          options={{
-            headerTitle: 'Regra de Três Simples',
-            headerTitleAlign: "center"
-          }}
-        />
-      </ScrollView>
+        {c && (
+          <Pressable onPress={limparInputs} style={styles.button}>
+            <Text style={styles.buttonText}>Limpar</Text>
+          </Pressable>
+        )}
+        {erro && <Text style={styles.errorText}>Erro! Informe apenas números</Text>}
+      </View>
+      <Stack.Screen
+        options={{
+          headerTitle: 'Regra de Três Simples',
+          headerTitleAlign: "center"
+        }}
+      />
+    </ScrollView>
   );
 }
 
@@ -142,24 +146,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     textAlign: "left",
-   
+
   },
   body: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 30,
-   
+
   },
   subtitle: {
     fontSize: 24,
     marginBottom: 30,
-   
+
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-   
+
   },
   input: {
     padding: 5,

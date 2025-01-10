@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Data compras",
+    "name": "DataMoney",
     "slug": "data-compras",
-    "scheme": "datacompras",
+    "scheme": "DataMoney",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
