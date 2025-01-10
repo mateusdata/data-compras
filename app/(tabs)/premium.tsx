@@ -105,7 +105,7 @@ function Premium() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Total de moneys</Text>
+      <Text style={styles.title}>Total de crédito</Text>
       <Text style={styles.title}>{`R$: ${money},00`}</Text>
 
       <Button
@@ -116,7 +116,7 @@ function Premium() {
         onPress={showRewardedInterstitial1}
         style={styles.button}
       >
-        {loaded1 ? 'Ganhar money do Anúncio 1' : 'Carregando anúncio 1...'}
+        {loaded1 ? 'Ganhar crédito do Anúncio 1' : 'Carregando anúncio 1...'}
       </Button>
 
       <Button
@@ -127,7 +127,7 @@ function Premium() {
         onPress={showRewardedInterstitial2}
         style={styles.button}
       >
-        {loaded2 ? 'Ganhar money do Anúncio 2' : 'Carregando anúncio 2...'}
+        {loaded2 ? 'Ganhar crédito do Anúncio 2' : 'Carregando anúncio 2...'}
       </Button>
     </View>
   );

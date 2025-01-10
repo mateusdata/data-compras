@@ -65,7 +65,7 @@ function RootLayoutNav() {
                 size={28}
               />
             ),
-            headerTitle:"Ganhe money"
+            headerTitle:"Ganhe crédito"
           }}
         />
       </Tabs>
