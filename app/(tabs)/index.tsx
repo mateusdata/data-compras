@@ -3,10 +3,9 @@ import { StyleSheet, FlatList, useColorScheme, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput, List, IconButton } from 'react-native-paper';
 import { Link, Stack } from 'expo-router';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+//import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { TestIds, useInterstitialAd, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { colorBlack, colorPrymary } from '@/constants/Colors';
-import { DarkTheme } from '@react-navigation/native';
 import { adUnitId, bannerAdUnitId } from '@/utils/adUnitId';
 import MainList from '@/components/MainList';
 import { Text, View } from '@/components/Themed';
@@ -91,7 +90,6 @@ export default function ShoppingListScreen() {
           label={colorScheme === 'dark' ? '' : 'Adicionar item'}
           placeholder='Adicionar item'
           value={newItem}
-          outlineColor={colorScheme === 'dark' ? colorBlack : colorPrymary}
           contentStyle={colorScheme === 'dark' ? { backgroundColor: colorBlack, color: "white" } : {}}
 
           mode="outlined"

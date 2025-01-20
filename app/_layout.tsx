@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
 import Splash from '@/components/SplashScreen';
 import Toast from 'react-native-toast-message';
+import { PaperProvider } from 'react-native-paper';
 
 
 
@@ -67,17 +68,17 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      
-    
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'light'} />
-      <Stack screenOptions={{
-       
-        headerShown:false
-      }}>
-        <Stack.Screen name="(tabs)" options={{}} />
-      </Stack>
+      <PaperProvider>
 
-      
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'light'} />
+        <Stack screenOptions={{
+
+          headerShown: false
+        }}>
+          <Stack.Screen name="(tabs)" options={{}} />
+        </Stack>
+      </PaperProvider>
+
     </ThemeProvider>
   );
 }

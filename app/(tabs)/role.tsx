@@ -3,9 +3,9 @@ import { StyleSheet, ScrollView, Dimensions, useColorScheme, Pressable } from "r
 import { TextInput } from "react-native-paper";
 import { AntDesign } from '@expo/vector-icons';
 import { Text, View } from "@/components/Themed";
-import { Link, Stack } from "expo-router";
-import { BannerAd, BannerAdSize, useInterstitialAd } from "react-native-google-mobile-ads";
-import { adUnitId, bannerAdUnitId, bannerAdUnitId2 } from "@/utils/adUnitId";
+import {  Stack } from "expo-router";
+import { useInterstitialAd } from "react-native-google-mobile-ads";
+import { adUnitId } from "@/utils/adUnitId";
 import { colorPrymary } from "@/constants/Colors";
 
 const RuleOfThree: React.FC = () => {

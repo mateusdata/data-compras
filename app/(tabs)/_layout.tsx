@@ -1,11 +1,11 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import {  DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Tabs } from 'expo-router';
 import 'react-native-reanimated';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-
+//import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useColorScheme } from '@/components/useColorScheme';
 import { StatusBar } from 'expo-status-bar';
-import { colorPrymary } from '@/constants/Colors';
+import CustomBottomNavigation from '@/components/CustomBottomNavigation';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 export default function RootLayout() {
@@ -20,56 +20,39 @@ function RootLayoutNav() {
 
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
 
-      <Tabs screenOptions={{
-        headerStyle: {
-          backgroundColor: colorScheme === 'dark' ? "black" : "white"
-        },
-        tabBarStyle: {
-          height: 70
-        },
-        tabBarIconStyle: {
-          marginTop: 10,
-        },
-        tabBarShowLabel: false,
-        tabBarInactiveTintColor:"gray"
-      }}>
+      <Tabs key={1} tabBar={(props) => <CustomBottomNavigation {...props} />} >
 
         <Tabs.Screen name="index" options={{
-          tabBarIcon: ({ focused, color }) => (
-            <FontAwesome
-              name='home'
-              color={focused ? colorPrymary : undefined}
-              size={28}
-            />
+          tabBarLabel: 'Início',
+          tabBarIcon: ({ focused, color, size }) => (
+        <Icon
+          name='home'
+          size={size}
+        />
           )
         }} />
-        <Tabs.Screen name="role"
-          options={{
-            tabBarIcon: ({ focused, color }) => (
-              <FontAwesome
-                name='calculator'
-                color={focused ? colorPrymary : undefined}
-
-                size={28}
-              />
-            )
-          }}
+        <Tabs.Screen name="role" options={{
+          tabBarLabel: 'Calculadora',
+          tabBarIcon: ({ focused, color, size }) => (
+        <Icon
+          name='calculator'
+          size={size}
         />
-
-        <Tabs.Screen name="premium"
-          options={{
-            tabBarIcon: ({ focused, color }) => (
-              <FontAwesome
-                name='money'
-                color={focused ? colorPrymary : undefined}
-                size={28}
-              />
-            ),
-            headerTitle:"Ganhe crédito"
-          }}
+          )
+        }} />
+        <Tabs.Screen name="premium" options={{
+          tabBarLabel: 'Crédito',
+          tabBarIcon: ({ focused, color, size }) => (
+        <Icon
+          name='cash'
+          size={size}
         />
+          ),
+          headerTitle: "Ganhe crédito"
+        }} />
       </Tabs>
 
     </ThemeProvider>
   );
 }
+
