@@ -10,6 +10,8 @@ import { adUnitId, bannerAdUnitId } from '@/utils/adUnitId';
 import MainList from '@/components/MainList';
 import { Text, View } from '@/components/Themed';
 import Toast from 'react-native-toast-message';
+import { ToastAndroid } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
 export default function ShoppingListScreen() {
   const [items, setItems] = useState<string[]>([]);
@@ -54,20 +56,31 @@ export default function ShoppingListScreen() {
   const addItem = (item: string) => {
     if (item.trim() === "") return;
     if (items.includes(item)) {
-      Toast.show({
+      /*Toast.show({
         type: 'error',
         text1: 'Erro',
         text2: 'Este item já está na lista.',
         position: 'top',
         text1Style: { fontSize: 16 },
         text2Style: { fontSize: 14 },
-      });
+      });*/
+
+      ToastAndroid.showWithGravity(
+        'Este item já está na lista.',
+        ToastAndroid.TOP,
+        ToastAndroid.TOP,
+
+      );
+      Haptics.notificationAsync( Haptics.NotificationFeedbackType.Error)
+       //Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
       return;
     }
     const updatedItems = [...items, item];
     setItems(updatedItems);
     setNewItem('');
     saveItems(updatedItems);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+
   };
   
 
@@ -92,7 +105,7 @@ export default function ShoppingListScreen() {
           value={newItem}
           contentStyle={colorScheme === 'dark' ? { backgroundColor: colorBlack, color: "white" } : {}}
 
-          mode="outlined"
+          mode="flat"
           onChangeText={setNewItem}
           onSubmitEditing={() => addItem(newItem)}
           returnKeyType="done"
