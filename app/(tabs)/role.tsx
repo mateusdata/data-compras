@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     backgroundColor: "trasnparent",
   },
-  subtitle: {
+  subtitle: {backgroundColor: '',
     fontSize: 24,
     marginBottom: 30,
   },
