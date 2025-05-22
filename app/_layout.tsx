@@ -13,6 +13,7 @@ import { Platform } from 'react-native';
 import Splash from '@/components/SplashScreen';
 import Toast from 'react-native-toast-message';
 import { PaperProvider } from 'react-native-paper';
+import PaymentProvider from '@/contexts/PaymentProvider';
 
 
 
@@ -69,16 +70,18 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <PaperProvider>
+        <PaymentProvider>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'light'} />
+          <Stack screenOptions={{
 
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'light'} />
-        <Stack screenOptions={{
+            headerShown: false
+          }}>
+            <Stack.Screen name="(tabs)" options={{}} />
+          </Stack>
+        </PaymentProvider>
 
-          headerShown: false
-        }}>
-          <Stack.Screen name="(tabs)" options={{}} />
-        </Stack>
       </PaperProvider>
 
-    </ThemeProvider>
+    </ThemeProvider >
   );
 }

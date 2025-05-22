@@ -22,6 +22,7 @@ interface State {
 const ShoppingListScreen: React.FC<ShoppingListProps> = () => {
   const [state, setState] = useState<State>({ items: [], newItem: '', addCount: 0 });
   const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId);
+  const [freeItemLimit, setFreeItemLimit] = useState<number>(5);
   const colorScheme = useColorScheme();
 
   useEffect(() => {
@@ -84,7 +85,7 @@ const ShoppingListScreen: React.FC<ShoppingListProps> = () => {
     saveAddCount(newAddCount);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    if (newAddCount % 5 === 0 && isLoaded) {
+    if (newAddCount % freeItemLimit === 0 && isLoaded) {
       show();
     } else if (!isLoaded) {
       console.error('Ad is not loaded yet.');
