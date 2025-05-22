@@ -24,33 +24,39 @@ Acesse o repositório do projeto:
 ---
 
 ## ▶️ Como rodar o projeto localmente com Expo
-
 1. Instale o Expo CLI globalmente:
+
    ```bash
    npm install -g expo-cli
-   2. Clone o repositório do projeto:
-      ```bash
-      git clone https://github.com/mateusdata/App-mercado.git
-      ```
+   ```
 
-   3. Acesse a pasta do projeto:
-      ```bash
-      cd App-mercado
-      ```
+2. Clone o repositório do projeto:
 
-   4. Instale as dependências do projeto:
-      ```bash
-      npm install
-      ```
+   ```bash
+   git clone https://github.com/mateusdata/App-mercado.git
+   ```
 
-   5. Inicie o servidor de desenvolvimento do Expo:
-      ```bash
-      expo start
-      ```
+3. Acesse a pasta do projeto:
 
-   6. Execute o app:
-      - Escaneie o QR code exibido no terminal ou navegador com o app Expo Go (disponível na Google Play e App Store).
+   ```bash
+   cd App-mercado
+   ```
 
-      **Ou, se preferir:**
-      - Execute no navegador (modo web).
-      - Ou utilize um emulador Android/iOS configurado na sua máquina.
+4. Instale as dependências do projeto:
+
+   ```bash
+   npm install
+   ```
+
+5. Inicie o servidor de desenvolvimento do Expo:
+
+   ```bash
+   expo start
+   ```
+
+6. Execute o app:
+   - Escaneie o QR code exibido no terminal ou navegador com o app Expo Go (disponível na Google Play e App Store).
+
+   **Ou, se preferir:**
+   - Execute no navegador (modo web).
+   - Ou utilize um emulador Android/iOS configurado na sua máquina.
