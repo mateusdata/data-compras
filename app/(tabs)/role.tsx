@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {  StyleSheet, ScrollView, Dimensions, useColorScheme} from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { StyleSheet, ScrollView, Dimensions, useColorScheme, Pressable } from "react-native";
+import { TextInput } from "react-native-paper";
 import { AntDesign } from '@expo/vector-icons';
-import { Pressable } from "react-native";
 import { Text, View } from "@/components/Themed";
+import {  Stack } from "expo-router";
+import { useInterstitialAd } from "react-native-google-mobile-ads";
+import { adUnitId } from "@/utils/adUnitId";
+import { colorPrymary } from "@/constants/Colors";
 
 const RuleOfThree: React.FC = () => {
   const [x, setX] = useState<string>("X");
@@ -11,13 +14,31 @@ const RuleOfThree: React.FC = () => {
   const [b, setB] = useState<string>("");
   const [c, setC] = useState<string>("");
   const [erro, setErro] = useState<boolean>(false);
-  const colorScheme = useColorScheme(); 
+  const colorScheme = useColorScheme();
+  const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId);
+
+  useEffect(() => {
+    load(); // Load the ad when the component mounts
+  }, [load]);
+
+  useEffect(() => {
+    if (isClosed) {
+      load(); // Reload the ad when it is closed
+    }
+  }, [isClosed, load]);
+
   const limparInputs = () => {
     setX("X");
     setA("");
     setB("");
     setC("");
     setErro(false);
+    if (isLoaded) {
+      show();
+    } else {
+      console.error('Ad is not loaded yet.');
+      load(); // Attempt to reload the ad if it's not loaded
+    }
   };
 
   const regraTres = () => {
@@ -36,16 +57,18 @@ const RuleOfThree: React.FC = () => {
   }, [a, b, c]);
 
   return (
+
     <ScrollView style={styles.container}>
+
       <View style={styles.header}>
         <Text style={styles.title}>Calculadora de Regra de Três Simples</Text>
-        <Text style={[styles.title,{color:"white"}]}>{colorScheme}</Text>
-
       </View>
       <View style={styles.body}>
         <Text style={styles.subtitle}>Opções</Text>
         <View style={styles.row}>
           <TextInput
+            contentStyle={{ backgroundColor: colorScheme === "dark" ? "black" : "white", color: colorScheme === "dark" ? "white" : "black" }}
+            activeOutlineColor={colorPrymary}
             placeholder="A"
             keyboardType="numeric"
             style={styles.input}
@@ -55,6 +78,8 @@ const RuleOfThree: React.FC = () => {
           />
           <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
           <TextInput
+            contentStyle={{ backgroundColor: colorScheme === "dark" ? "black" : "white", color: colorScheme === "dark" ? "white" : "black" }}
+            activeOutlineColor={colorPrymary}
             placeholder="B"
             keyboardType="numeric"
             style={styles.input}
@@ -66,6 +91,8 @@ const RuleOfThree: React.FC = () => {
         <Text style={styles.label}>ASSIM COMO</Text>
         <View style={styles.row}>
           <TextInput
+            contentStyle={{ backgroundColor: colorScheme === "dark" ? "black" : "white", color: colorScheme === "dark" ? "white" : "black" }}
+            activeOutlineColor={colorPrymary}
             placeholder="C"
             keyboardType="numeric"
             style={styles.input}
@@ -75,11 +102,14 @@ const RuleOfThree: React.FC = () => {
           />
           <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
           <TextInput
+            contentStyle={{ backgroundColor: colorScheme === "dark" ? "black" : "white", color: colorScheme === "dark" ? "white" : "black" }}
+            activeOutlineColor={colorPrymary}
             placeholder="Resultado"
             keyboardType="numeric"
             style={styles.result}
             value={x}
             mode="outlined"
+            outlineColor={x !== "X" && a && b && c ? "green" : undefined}
             editable={false}
           />
         </View>
@@ -90,6 +120,12 @@ const RuleOfThree: React.FC = () => {
         )}
         {erro && <Text style={styles.errorText}>Erro! Informe apenas números</Text>}
       </View>
+      <Stack.Screen
+        options={{
+          headerTitle: 'Regra de Três Simples',
+          headerTitleAlign: "center"
+        }}
+      />
     </ScrollView>
   );
 }
@@ -110,20 +146,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     textAlign: "left",
+
   },
   body: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 30,
+
   },
   subtitle: {
     fontSize: 24,
     marginBottom: 30,
+
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
+
   },
   input: {
     padding: 5,
@@ -139,7 +179,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: "center",
     color: "orange",
-
   },
   icon: {
     marginTop: 10,
@@ -150,7 +189,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 50,
-    backgroundColor: "#66b2ff", // Azul mais claro
+    backgroundColor: "#66b2ff",
     borderRadius: 8,
     width: 150,
     height: 50,

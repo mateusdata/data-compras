@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Data compras",
+    "name": "DataMoney",
     "slug": "data-compras",
-    "scheme": "datacompras",
+    "scheme": "DataMoney",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -35,8 +35,8 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-6242824020711835~1164268856"
-          
+          "androidAppId": "ca-app-pub-6242824020711835~1164268856",
+          "iosAppId": null
         }
       ]
     ],

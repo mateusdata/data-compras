@@ -12,12 +12,13 @@ import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
 import Splash from '@/components/SplashScreen';
 import Toast from 'react-native-toast-message';
+import { PaperProvider } from 'react-native-paper';
 
 
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: 'index',
+  initialRouteName: '(tabs)',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -67,21 +68,17 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      
-     
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'light'} />
-      <Stack screenOptions={{
-        headerStyle: {
-          backgroundColor: colorScheme === 'dark' ? colorBlack : colorPrymary,
-        },
-        headerTintColor: colorScheme === 'dark' ? DarkTheme.colors.text : "white",
-      }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="role" options={{ presentation: 'modal' }} />
-      </Stack>
+      <PaperProvider>
 
-      
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'light'} />
+        <Stack screenOptions={{
+
+          headerShown: false
+        }}>
+          <Stack.Screen name="(tabs)" options={{}} />
+        </Stack>
+      </PaperProvider>
+
     </ThemeProvider>
   );
 }

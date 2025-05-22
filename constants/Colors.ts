@@ -1,6 +1,6 @@
 const tintColorLight = '#FF8E3A';
 const tintColorDark = '#fff';
-export const colorPrymary = '#FF7500';
+export const colorPrymary = '#25D366';
 export const colorBlack = '#1C1C1C';
 
 
