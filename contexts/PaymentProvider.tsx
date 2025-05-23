@@ -4,15 +4,23 @@ import Purchases, { LOG_LEVEL, PurchasesPackage, CustomerInfo } from 'react-nati
 
 
 export const API_KEYS = {
-  ios: null,
+  ios: "key_ios",
   android: '',
 };
 
 interface PaymentContextProps {
-  // Define aquí las propiedades que quieras compartir en el contexto
+  payment: (pack: PurchasesPackage) => Promise<void>;
+  restorePayments: () => Promise<void>;
+  fetchOffers: () => Promise<void>;
+  packages: PurchasesPackage[];
+  user: CustomerInfo | null;
+  isLoading: boolean;
+  updateCustomerInfo: (customerInfo: CustomerInfo) => void;
+  setUser: React.Dispatch<React.SetStateAction<CustomerInfo | null>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;  
 }
 
-const PaymentContext = createContext<PaymentContextProps>({});
+const PaymentContext = createContext<PaymentContextProps>({} as PaymentContextProps);
 
 
 export default function PaymentProvider({ children }: React.PropsWithChildren) {
@@ -32,7 +40,14 @@ export default function PaymentProvider({ children }: React.PropsWithChildren) {
         Purchases.configure({ apiKey: API_KEYS.android });
       }
       Purchases.setLogLevel(LOG_LEVEL.DEBUG);
-      await fetchOffers();
+
+
+      Purchases.addCustomerInfoUpdateListener(async (customerInfo) => {
+        console.log('Customer info updated:', customerInfo);
+        updateCustomerInfo(customerInfo);
+      });
+
+       await fetchOffers();
 
     }
     // carregar ofertas
@@ -40,6 +55,30 @@ export default function PaymentProvider({ children }: React.PropsWithChildren) {
   }, [])
 
 
+  const payment = async (pack: PurchasesPackage) => {
+    try {
+      await Purchases.purchasePackage(pack);
+      console.log('Compra realizada com sucesso', pack);
+
+    } catch (error: any) {
+      if (error.userCancelled) {
+        console.log('Compra cancelada pelo usuário');
+      } else {
+        console.error('Erro ao realizar a compra:', error);
+      }
+    }
+  }
+
+  const restorePayments = async () => {
+    const customerInfo = await Purchases.restorePurchases();
+    console.log('Restaurando compras', customerInfo);
+
+  }
+
+
+  const updateCustomerInfo = async (customerInfo: CustomerInfo) => {
+    console.log('Customer info updated:', customerInfo?.entitlements);
+  }
   const fetchOffers = async () => {
     try {
       const offerings = await Purchases.getOfferings();
@@ -53,9 +92,22 @@ export default function PaymentProvider({ children }: React.PropsWithChildren) {
     }
   }
 
-  return (
-    <PaymentContext.Provider value={{}}>
 
+
+  const values = {
+    payment,
+    restorePayments,
+    fetchOffers,
+    packages,
+    user,
+    isLoading,
+    updateCustomerInfo,
+    setUser,
+    setIsLoading,
+  };
+
+  return (
+    <PaymentContext.Provider value={values}>
       {children}
     </PaymentContext.Provider>
   );

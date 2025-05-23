@@ -79,7 +79,6 @@ function RootLayoutNav() {
             <Stack.Screen name="(tabs)" options={{}} />
           </Stack>
         </PaymentProvider>
-
       </PaperProvider>
 
     </ThemeProvider >
