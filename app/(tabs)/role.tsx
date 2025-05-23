@@ -1,3 +1,4 @@
+// imports
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, Dimensions, useColorScheme, Pressable } from 'react-native';
 import { TextInput } from 'react-native-paper';
@@ -7,13 +8,15 @@ import { Stack } from 'expo-router';
 import { useInterstitialAd } from 'react-native-google-mobile-ads';
 import { adUnitId } from '@/utils/adUnitId';
 import { colorPrymary } from '@/constants/Colors';
+import { usePayment } from '@/contexts/PaymentProvider';
 
-interface RuleOfThreeProps {}
-
-const RuleOfThree: React.FC<RuleOfThreeProps> = () => {
+const RuleOfThree = () => {
   const [inputs, setInputs] = useState({ a: '', b: '', c: '', result: 'X' });
   const [error, setError] = useState('');
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const { hasPlan } = usePayment();
   const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId);
 
   useEffect(() => {
@@ -26,8 +29,9 @@ const RuleOfThree: React.FC<RuleOfThreeProps> = () => {
 
   const calculate = () => {
     const { a, b, c } = inputs;
+
     if (!a || !b || !c) {
-      setInputs({ ...inputs, result: 'X' });
+      setInputs((prev) => ({ ...prev, result: 'X' }));
       setError('');
       return;
     }
@@ -38,17 +42,18 @@ const RuleOfThree: React.FC<RuleOfThreeProps> = () => {
 
     if (isNaN(numA) || isNaN(numB) || isNaN(numC)) {
       setError('Insira apenas números válidos');
-      setInputs({ ...inputs, result: 'X' });
+      setInputs((prev) => ({ ...prev, result: 'X' }));
       return;
     }
 
     if (numA === 0) {
       setError('O valor de A não pode ser zero');
-      setInputs({ ...inputs, result: 'X' });
+      setInputs((prev) => ({ ...prev, result: 'X' }));
       return;
     }
 
-    setInputs({ ...inputs, result: ((numB * numC) / numA).toFixed(2) });
+    const result = ((numB * numC) / numA).toFixed(2);
+    setInputs((prev) => ({ ...prev, result }));
     setError('');
   };
 
@@ -59,95 +64,82 @@ const RuleOfThree: React.FC<RuleOfThreeProps> = () => {
   const clearInputs = () => {
     setInputs({ a: '', b: '', c: '', result: 'X' });
     setError('');
-    if (isLoaded) show();
-    else {
-      console.error('Ad not loaded');
-      load();
-    }
+    if (!hasPlan && isLoaded) show();
+    else if (!hasPlan) load();
   };
 
-  const handleInputChange = (key: keyof typeof inputs, value: string) => {
-    setInputs({ ...inputs, [key]: value });
+  const handleChange = (key: keyof typeof inputs, value: string) => {
+    setInputs((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
-    <ScrollView style={styles.container}>
-     
+    <ScrollView style={[styles.container, { backgroundColor: isDark ? 'transparent' : '#fff' }]}>
       <View style={styles.body}>
-        <Text style={styles.subtitle}>Opções</Text>
+        <Text style={[styles.subtitle, { color: isDark ? '#fff' : '#000' }]}>Regra de Três</Text>
+
         <View style={styles.row}>
           <TextInput
-            contentStyle={{
-              backgroundColor: colorScheme === 'dark' ? 'black' : 'white',
-              color: colorScheme === 'dark' ? 'white' : 'black',
-            }}
-            activeOutlineColor={colorPrymary}
             placeholder="A"
             keyboardType="numeric"
-            style={styles.input}
-            onChangeText={(text) => handleInputChange('a', text)}
             value={inputs.a}
+            onChangeText={(text) => handleChange('a', text)}
             mode="outlined"
+            style={styles.input}
+            contentStyle={{borderWidth: 0.5 ,  backgroundColor: isDark ? '#1e1e1e' : '#fff' }}
+            theme={{ colors: { text: isDark ? '#fff' : '#000' }, roundness: 8 }}
+            activeOutlineColor={colorPrymary}
           />
           <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
           <TextInput
-            contentStyle={{
-              backgroundColor: colorScheme === 'dark' ? 'black' : 'white',
-              color: colorScheme === 'dark' ? 'white' : 'black',
-            }}
-            activeOutlineColor={colorPrymary}
             placeholder="B"
             keyboardType="numeric"
-            style={styles.input}
-            onChangeText={(text) => handleInputChange('b', text)}
             value={inputs.b}
+            onChangeText={(text) => handleChange('b', text)}
             mode="outlined"
+            style={styles.input}
+            contentStyle={{borderWidth: 0.5 ,  backgroundColor: isDark ? '#1e1e1e' : '#fff' }}
+            theme={{ colors: { text: isDark ? '#fff' : '#000' }, roundness: 8 }}
+            activeOutlineColor={colorPrymary}
           />
         </View>
-        <Text style={styles.label}>ASSIM COMO</Text>
+
+        <Text style={[styles.label, { color: isDark ? '#ccc' : '#333' }]}>ASSIM COMO</Text>
+
         <View style={styles.row}>
           <TextInput
-            contentStyle={{
-              backgroundColor: colorScheme === 'dark' ? 'black' : 'white',
-              color: colorScheme === 'dark' ? 'white' : 'black',
-            }}
-            activeOutlineColor={colorPrymary}
             placeholder="C"
             keyboardType="numeric"
-            style={styles.input}
-            onChangeText={(text) => handleInputChange('c', text)}
             value={inputs.c}
+            onChangeText={(text) => handleChange('c', text)}
             mode="outlined"
+            style={styles.input}
+            contentStyle={{borderWidth: 0.5 ,  backgroundColor: isDark ? '#1e1e1e' : '#fff' }}
+            theme={{ colors: { text: isDark ? '#fff' : '#000' }, roundness: 8 }}
+            activeOutlineColor={colorPrymary}
           />
           <AntDesign name="arrowright" size={30} color="orange" style={styles.icon} />
           <TextInput
-            contentStyle={{
-              backgroundColor: colorScheme === 'dark' ? 'black' : 'white',
-              color: colorScheme === 'dark' ? 'white' : 'black',
-            }}
-            activeOutlineColor={colorPrymary}
             placeholder="Resultado"
-            keyboardType="numeric"
-            style={styles.result}
             value={inputs.result}
-            mode="outlined"
-            outlineColor={inputs.result !== 'X' && inputs.a && inputs.b && inputs.c && !error ? 'green' : undefined}
             editable={false}
+            mode="outlined"
+            style={styles.result}
+            contentStyle={{borderWidth: 0.5 ,  backgroundColor: isDark ? '#1e1e1e' : '#fff', color: 'orange'}}
+            theme={{ colors: { text: 'orange' }, roundness: 8 }}
+            outlineColor={inputs.result !== 'X' && !error ? 'green' : undefined}
           />
         </View>
+
         {(inputs.a || inputs.b || inputs.c) && (
-          <Pressable onPress={clearInputs} style={styles.button}>
+          <Pressable onPress={clearInputs} style={[styles.button, { backgroundColor: isDark ? '#2980b9' : '#3cb371' }]}>
             <Text style={styles.buttonText}>Limpar</Text>
           </Pressable>
         )}
-        {error && <Text style={styles.errorText}>{error}</Text>}
+
+        {error !== '' && <Text style={styles.errorText}>{error}</Text>}
       </View>
-      <Stack.Screen
-        options={{
-          headerTitle: 'Regra de Três Simples',
-          headerTitleAlign: 'center',
-        }}
-      />
+
+      <Stack.Screen options={{ headerTitle: 'Regra de Três Simples', headerTitleAlign: 'center' }} />
     </ScrollView>
   );
 };
@@ -159,68 +151,56 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
-  header: {
-    padding: 10,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-  },
-  title: {
-    fontSize: 30,
-    textAlign: 'left',
-  },
   body: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginTop: 30,
-    backgroundColor: "trasnparent",
+    alignItems: 'center',
   },
-  subtitle: {backgroundColor: '',
+  subtitle: {
     fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 30,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 20,
   },
   input: {
-    padding: 5,
     width: width * 0.3,
     height: 50,
-    fontSize: 30,
+    fontSize: 18,
     textAlign: 'center',
+    marginHorizontal: 5,
   },
   result: {
-    padding: 5,
     width: width * 0.3,
     height: 50,
-    fontSize: 30,
+    fontSize: 18,
     textAlign: 'center',
-    color: 'orange',
+    marginHorizontal: 5,
   },
   icon: {
-    marginTop: 10,
-    padding: 5,
+    marginHorizontal: 5,
   },
   label: {
-    fontSize: 20,
+    fontSize: 18,
+    fontWeight: '500',
+    marginVertical: 10,
   },
   button: {
-    marginBottom: 50,
-    backgroundColor: '#66b2ff',
-    borderRadius: 8,
-    width: 150,
-    height: 50,
     marginTop: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
   buttonText: {
+    fontSize: 16,
     color: 'white',
-    fontSize: 20,
   },
   errorText: {
     color: 'red',
+    marginTop: 10,
+    fontSize: 14,
   },
 });
 

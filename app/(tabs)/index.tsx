@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, FlatList, useColorScheme, View as RNView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, FlatList, useColorScheme, ToastAndroid, View as RNView } from 'react-native';
 import { TextInput, List, IconButton } from 'react-native-paper';
 import { Stack } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useInterstitialAd, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import * as Haptics from 'expo-haptics';
+
 import { colorBlack, colorPrymary } from '@/constants/Colors';
 import { adUnitId, bannerAdUnitId } from '@/utils/adUnitId';
 import MainList from '@/components/MainList';
 import { Text, View } from '@/components/Themed';
-import { ToastAndroid } from 'react-native';
-import * as Haptics from 'expo-haptics';
-
-interface ShoppingListProps {}
+import { usePayment } from '@/contexts/PaymentProvider';
 
 interface State {
   items: string[];
@@ -19,11 +18,15 @@ interface State {
   addCount: number;
 }
 
-const ShoppingListScreen: React.FC<ShoppingListProps> = () => {
+const ShoppingListScreen: React.FC = () => {
   const [state, setState] = useState<State>({ items: [], newItem: '', addCount: 0 });
-  const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId);
-  const [freeItemLimit, setFreeItemLimit] = useState<number>(5);
+  const [freeItemLimit] = useState<number>(5);
+
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const { hasPlan } = usePayment();
+  const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitId);
 
   useEffect(() => {
     const loadData = async () => {
@@ -32,16 +35,18 @@ const ShoppingListScreen: React.FC<ShoppingListProps> = () => {
           AsyncStorage.getItem('shoppingItems'),
           AsyncStorage.getItem('addCount'),
         ]);
-        setState((prev) => ({
-          ...prev,
+        setState({
           items: storedItems ? JSON.parse(storedItems) : [],
+          newItem: '',
           addCount: storedAddCount ? Number(storedAddCount) : 0,
-        }));
+        });
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('Erro ao carregar dados:', error);
       }
+
       load();
     };
+
     loadData();
   }, [load]);
 
@@ -53,7 +58,7 @@ const ShoppingListScreen: React.FC<ShoppingListProps> = () => {
     try {
       await AsyncStorage.setItem('shoppingItems', JSON.stringify(items));
     } catch (error) {
-      console.error('Error saving items:', error);
+      console.error('Erro ao salvar itens:', error);
     }
   };
 
@@ -61,18 +66,15 @@ const ShoppingListScreen: React.FC<ShoppingListProps> = () => {
     try {
       await AsyncStorage.setItem('addCount', JSON.stringify(count));
     } catch (error) {
-      console.error('Error saving add count:', error);
+      console.error('Erro ao salvar contagem de adições:', error);
     }
   };
 
   const addItem = (item: string) => {
     if (item.trim() === '') return;
+
     if (state.items.includes(item)) {
-      ToastAndroid.showWithGravity(
-        'Este item já está na lista.',
-        ToastAndroid.SHORT,
-        ToastAndroid.TOP
-      );
+      ToastAndroid.show('Este item já está na lista.', ToastAndroid.SHORT);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       return;
     }
@@ -85,10 +87,9 @@ const ShoppingListScreen: React.FC<ShoppingListProps> = () => {
     saveAddCount(newAddCount);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    if (newAddCount % freeItemLimit === 0 && isLoaded) {
+    if (!hasPlan && newAddCount % freeItemLimit === 0 && isLoaded) {
       show();
-    } else if (!isLoaded) {
-      console.error('Ad is not loaded yet.');
+    } else if (!hasPlan && !isLoaded) {
       load();
     }
   };
@@ -102,48 +103,50 @@ const ShoppingListScreen: React.FC<ShoppingListProps> = () => {
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ headerTitle: 'Data coints' }} />
+
       <TextInput
         placeholder="Adicionar item"
         value={state.newItem}
         onChangeText={(text) => setState((prev) => ({ ...prev, newItem: text }))}
         onSubmitEditing={() => addItem(state.newItem)}
-        contentStyle={{
-          backgroundColor: colorScheme === 'dark' ? colorBlack : '#fff',
-          color: colorScheme === 'dark' ? '#fff' : '#000',
-        }}
-        mode="flat"
         returnKeyType="done"
-        activeOutlineColor={colorPrymary}
+        mode="flat"
         style={styles.input}
+        contentStyle={{
+          backgroundColor: isDark ? colorBlack : '#fff',
+          color: isDark ? '#fff' : '#000',
+        }}
+        activeOutlineColor={colorPrymary}
       />
+
       <FlatList
         data={state.items}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(_, index) => index.toString()}
+        contentContainerStyle={styles.listContainer}
         ListFooterComponent={<MainList onAddItem={addItem} />}
         renderItem={({ item, index }) => (
-          <RNView style={[styles.listItem, {
-            backgroundColor: colorScheme === 'dark' ? '#1A1A1A' : '#fff',
-            borderColor: colorScheme === 'dark' ? '#333' : '#ddd',
-            shadowColor: colorScheme === 'dark' ? '#fff' : '#000',
-          }]}>
+          <RNView
+            style={[
+              styles.listItem,
+              {
+                backgroundColor: isDark ? '#1A1A1A' : '#fff',
+                borderColor: isDark ? '#333' : '#ddd',
+                shadowColor: isDark ? '#fff' : '#000',
+              },
+            ]}
+          >
             <List.Item
               title={`${index + 1}. ${item}`}
-              titleStyle={[styles.itemTitle, {
-                color: colorScheme === 'dark' ? '#fff' : '#000',
-              }]}
+              titleStyle={{ ...styles.itemTitle, color: isDark ? '#fff' : '#000' }}
               right={() => (
-                <IconButton
-                  icon="delete"
-                  iconColor="#FF7F7F"
-                  onPress={() => removeItem(index)}
-                />
+                <IconButton icon="delete" iconColor="#FF7F7F" onPress={() => removeItem(index)} />
               )}
             />
           </RNView>
         )}
-        contentContainerStyle={styles.listContainer}
       />
-      {false && (
+
+      {!hasPlan && (
         <BannerAd
           unitId={bannerAdUnitId}
           size={BannerAdSize.FULL_BANNER}
@@ -170,7 +173,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 8,
     paddingHorizontal: 8,
-    paddingVertical: 4,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

@@ -1,11 +1,15 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
-import Purchases, { LOG_LEVEL, PurchasesPackage, CustomerInfo } from 'react-native-purchases';
-
+import Purchases, {
+  LOG_LEVEL,
+  PurchasesPackage,
+  CustomerInfo,
+  PurchasesConfiguration,
+} from 'react-native-purchases';
 
 export const API_KEYS = {
-  ios: "key_ios",
-  android: '',
+  ios: 'key_ios',
+  android: 'key_android',
 };
 
 interface PaymentContextProps {
@@ -15,99 +19,131 @@ interface PaymentContextProps {
   packages: PurchasesPackage[];
   user: CustomerInfo | null;
   isLoading: boolean;
-  updateCustomerInfo: (customerInfo: CustomerInfo) => void;
+  hasPlan: boolean;
   setUser: React.Dispatch<React.SetStateAction<CustomerInfo | null>>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;  
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  currentPlan: CustomerInfo | null;
 }
 
 const PaymentContext = createContext<PaymentContextProps>({} as PaymentContextProps);
 
-
 export default function PaymentProvider({ children }: React.PropsWithChildren) {
-
-  const [user, setUser] = React.useState<CustomerInfo | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [packages, setPackages] = React.useState<PurchasesPackage[]>([]);
+  const [user, setUser] = useState<CustomerInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [packages, setPackages] = useState<PurchasesPackage[]>([]);
+  const [hasPlan, setHasPlan] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<CustomerInfo| null>(null);
+  
 
   useEffect(() => {
-
     const init = async () => {
-      setIsLoading(true);
-      if (Platform.OS === 'ios') {
-        Purchases.configure({ apiKey: API_KEYS.ios });
-      }
-      if (Platform.OS === 'android') {
-        Purchases.configure({ apiKey: API_KEYS.android });
-      }
-      Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+      try {
+        setIsLoading(true);
+        const apiKey = Platform.OS === 'ios' ? API_KEYS.ios : API_KEYS.android;
+        const config: PurchasesConfiguration = { apiKey };
+        Purchases.configure(config);
+        Purchases.setLogLevel(LOG_LEVEL.DEBUG);
 
+        Purchases.addCustomerInfoUpdateListener((customerInfo) => {
+          updateCustomerInfo(customerInfo);
+        });
 
-      Purchases.addCustomerInfoUpdateListener(async (customerInfo) => {
-        console.log('Customer info updated:', customerInfo);
+        const customerInfo = await Purchases.getCustomerInfo();
         updateCustomerInfo(customerInfo);
-      });
-
-       await fetchOffers();
-
-    }
-    // carregar ofertas
-    init();
-  }, [])
-
-
-  const payment = async (pack: PurchasesPackage) => {
-    try {
-      await Purchases.purchasePackage(pack);
-      console.log('Compra realizada com sucesso', pack);
-
-    } catch (error: any) {
-      if (error.userCancelled) {
-        console.log('Compra cancelada pelo usuário');
-      } else {
-        console.error('Erro ao realizar a compra:', error);
+        await fetchOffers();
+      } catch (error) {
+        console.error('Erro ao inicializar RevenueCat:', error);
+      } finally {
+        setIsLoading(false);
       }
+    };
+
+    init();
+  }, []);
+
+  const updateCustomerInfo = (customerInfo: CustomerInfo) => {
+    setUser(customerInfo);
+    console.log('👤 Informações do cliente:', customerInfo);
+    console.log('/n/n');
+
+
+    const activeEntitlements = customerInfo.entitlements.active;
+
+    // Pega as keys dos entitlements ativos (que são verdadeiros)
+    const activeEntitlementKeys = Object.keys(activeEntitlements).filter(
+      (key) => activeEntitlements[key]?.isActive === true
+    );
+
+    if (activeEntitlementKeys.length > 0) {
+      setHasPlan(true);
+      // Aqui pega o productIdentifier do primeiro entitlement ativo
+      const firstEntitlement = activeEntitlements[activeEntitlementKeys[0]];
+      setCurrentPlan(customerInfo);
+    } else {
+      setHasPlan(false);
+      setCurrentPlan(null);
     }
-  }
 
-  const restorePayments = async () => {
-    const customerInfo = await Purchases.restorePurchases();
-    console.log('Restaurando compras', customerInfo);
-
-  }
+    console.log('📡 Entitlements ativos:', activeEntitlements.entitlements_basic);
+    console.log('✅ Plano ativo:', activeEntitlementKeys.length > 0 ? activeEntitlementKeys[0] : 'nenhum');
+  };
 
 
-  const updateCustomerInfo = async (customerInfo: CustomerInfo) => {
-    console.log('Customer info updated:', customerInfo?.entitlements);
-  }
   const fetchOffers = async () => {
     try {
       const offerings = await Purchases.getOfferings();
       if (offerings.current) {
         setPackages(offerings.current.availablePackages);
-        console.log('Ofertas carregadas:', offerings.current.availablePackages);
+        console.log('📦 Ofertas disponíveis:', offerings.current.availablePackages);
       }
     } catch (error) {
-      console.error('Error fetching offers:', error);
-
+      console.error('Erro ao buscar ofertas:', error);
     }
-  }
-
-
-
-  const values = {
-    payment,
-    restorePayments,
-    fetchOffers,
-    packages,
-    user,
-    isLoading,
-    updateCustomerInfo,
-    setUser,
-    setIsLoading,
   };
 
+  const payment = async (pack: PurchasesPackage) => {
+    try {
+      const purchaseResult = await Purchases.purchasePackage(pack);
+      updateCustomerInfo(purchaseResult.customerInfo);
+      alert('✅ Compra realizada com sucesso!');
+    } catch (error: any) {
+      if (error.userCancelled) {
+        alert('❌ Compra cancelada pelo usuário');
+      } else {
+        console.error('Erro ao realizar compra:', error);
+        alert('❌ Erro ao realizar a compra');
+      }
+    }
+  };
+
+  const restorePayments = async () => {
+    try {
+      const customerInfo = await Purchases.restorePurchases();
+      updateCustomerInfo(customerInfo);
+      alert('✅ Compras restauradas');
+    } catch (error) {
+      console.error('Erro ao restaurar compras:', error);
+      alert('❌ Erro ao restaurar compras');
+    }
+  };
+
+ 
+
   return (
-    <PaymentContext.Provider value={values}>
+    <PaymentContext.Provider
+      value={{
+        payment,
+        restorePayments,
+        fetchOffers,
+        packages,
+        user,
+        isLoading,
+        hasPlan,
+        currentPlan,
+        setUser,
+        setIsLoading,
+      }}
+    >
       {children}
     </PaymentContext.Provider>
   );

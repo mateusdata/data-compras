@@ -28,6 +28,7 @@ function RootLayoutNav() {
         <Icon
           name='home'
           size={size}
+          color={color}
         />
           )
         }} />
@@ -37,6 +38,7 @@ function RootLayoutNav() {
         <Icon
           name='calculator'
           size={size}
+          color={color}
         />
           )
         }} />
@@ -46,9 +48,23 @@ function RootLayoutNav() {
         <Icon
           name='cash'
           size={size}
+          color={color}
         />
           ),
           headerTitle: "Ganhe crédito"
+        }} />
+
+        <Tabs.Screen name="pay" options={{
+          tabBarLabel: 'Pagamento',
+          tabBarIcon: ({ focused, color, size }) => (
+        <Icon
+          name='credit-card'
+          size={size}
+          color={color}
+          
+        />
+          ),
+          headerTitle: "Planos"
         }} />
       </Tabs>
 
